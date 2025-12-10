@@ -86,5 +86,3 @@ Expected improvements after SFT+DPO:
 MIT License - see [LICENSE](LICENSE) for details.
 
 ---
-
-*This project was created for an LLM course and Dragon LLM internship preparation (Synthetic Data for Agentic LLMs).*
