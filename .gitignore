@@ -1,0 +1,117 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+
+# Model checkpoints (too large for git)
+models/sft/*/
+models/dpo/*/
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# Generated data (can be regenerated)
+data/raw/*.json
+data/raw/*.parquet
+data/filtered/*.json
+data/filtered/*.parquet
+data/preference/*.json
+data/preference/*.parquet
+
+# Evaluation results (can be regenerated)
+evaluation/results/*.json
+evaluation/figures/*.png
+evaluation/figures/*.pdf
+
+# Hugging Face cache
+.cache/
+*.lock
+
+# Wandb logs
+wandb/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Secrets
+*.env
+secrets.json
+credentials.json

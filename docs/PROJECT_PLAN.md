@@ -1,0 +1,367 @@
+# Synthetic Instruction Tuner
+## 프로젝트 계획서 (상세 일정)
+
+---
+
+## 1. 프로젝트 개요
+
+### 1.1 프로젝트 정보
+- **프로젝트명**: Synthetic Instruction Tuner
+- **기간**: 4주
+- **예산**: $0 (무료)
+- **환경**: Google Colab (무료 T4 GPU)
+
+### 1.2 목표 요약
+```
+합성 데이터 생성 → 품질 필터링 → 선호 데이터 생성 → SFT+DPO 학습 → 평가
+```
+
+---
+
+## 2. 전체 일정 개요
+
+```
+Week 1: 환경 설정 + 데이터 생성 (Magpie)
+Week 2: 품질 필터링 + 선호 데이터 생성
+Week 3: Fine-tuning (SFT + DPO)
+Week 4: 평가 + 문서화 + 발표 준비
+```
+
+---
+
+## 3. Week 1: 데이터 생성
+
+### 3.1 Day 1-2: 환경 설정
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| Colab 환경 설정 | GPU 확인, 라이브러리 설치 | 1시간 |
+| Hugging Face 로그인 | 토큰 설정, 모델 접근 권한 | 30분 |
+| 프로젝트 구조 설정 | 폴더 구조, 유틸리티 함수 | 1시간 |
+| Llama-3.1-8B 테스트 | 모델 로딩 및 추론 테스트 | 2시간 |
+
+#### 체크포인트
+- [ ] Colab에서 T4 GPU 할당 확인
+- [ ] transformers, peft, trl 설치 완료
+- [ ] Llama-3.1-8B 로딩 성공 (4-bit 양자화)
+
+### 3.2 Day 3-5: Magpie 데이터 생성
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| Magpie Generator 클래스 | 템플릿 기반 생성 | 3시간 |
+| Instruction 생성 | 15,000개 목표 | 8-10시간 (밤새) |
+| Response 생성 | 각 instruction에 대한 응답 | 8-10시간 (밤새) |
+| 데이터 저장 | JSON/Parquet 형식 | 1시간 |
+
+#### 생성 전략
+```
+Day 3 밤: Instruction 생성 시작 (5,000개 목표)
+Day 4 아침: 체크포인트 확인, 재시작
+Day 4 밤: Instruction 완료 + Response 생성 시작
+Day 5: Response 완료, 데이터 검증
+```
+
+#### 체크포인트
+- [ ] MagpieGenerator 클래스 구현 완료
+- [ ] Instruction 15,000개 생성 완료
+- [ ] Response 15,000개 생성 완료
+- [ ] data/raw/instructions_raw.json 저장 완료
+
+### 3.3 Week 1 산출물
+| 산출물 | 경로 | 설명 |
+|--------|------|------|
+| 설정 노트북 | notebooks/01_setup.ipynb | 환경 설정 |
+| 생성 노트북 | notebooks/02_magpie_generation.ipynb | 데이터 생성 |
+| 생성기 클래스 | src/data_generation/magpie_generator.py | Magpie 구현 |
+| Raw 데이터 | data/raw/instructions_raw.json | 15,000개 |
+
+---
+
+## 4. Week 2: 필터링 + 선호 데이터
+
+### 4.1 Day 1-2: 품질 필터링
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| 필터 클래스 구현 | 5가지 필터 규칙 | 3시간 |
+| 필터링 실행 | 15,000 → 10,000 | 1시간 |
+| 통계 분석 | 필터별 제거 수 | 1시간 |
+| 결과 검증 | 샘플 수동 검토 | 1시간 |
+
+#### 필터 규칙 상세
+```python
+FILTER_CONFIG = {
+    "length": {"min": 20, "max": 500},  # 단어 수
+    "repetition": {"max_repeat": 3},     # 연속 반복 허용 수
+    "diversity": {"jaccard_threshold": 0.8},
+    "refusal_keywords": [
+        "I'm an AI", "I cannot", "I don't have",
+        "As an AI", "I'm not able"
+    ],
+    "language": "en"
+}
+```
+
+#### 체크포인트
+- [ ] QualityFilter 클래스 구현 완료
+- [ ] 필터링 완료 (10,000개 이상 통과)
+- [ ] 통계 리포트 생성
+- [ ] data/filtered/instructions_filtered.json 저장
+
+### 4.2 Day 3-5: 선호 데이터 생성
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| 응답 생성 모델 설정 | 3개 소형 모델 | 2시간 |
+| 다중 응답 생성 | instruction당 3개 응답 | 6-8시간 |
+| Reward Model 설정 | OpenAssistant RM | 1시간 |
+| 점수화 및 선택 | chosen/rejected 쌍 | 2-3시간 |
+| 데이터 검증 | 점수 분포 확인 | 1시간 |
+
+#### 메모리 관리 전략
+```python
+# 순차적 모델 로딩 (메모리 절약)
+for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
+    model = load_model(model_name)
+    responses = generate(model, instructions)
+    save_responses(responses, model_name)
+    del model  # 메모리 해제
+    torch.cuda.empty_cache()
+```
+
+#### 체크포인트
+- [ ] 3개 모델 응답 생성 완료
+- [ ] Reward Model 점수화 완료
+- [ ] Preference 쌍 10,000개 생성
+- [ ] data/preference/preference_pairs.json 저장
+
+### 4.3 Week 2 산출물
+| 산출물 | 경로 | 설명 |
+|--------|------|------|
+| 필터링 노트북 | notebooks/03_quality_filtering.ipynb | 품질 필터 |
+| 선호 생성 노트북 | notebooks/04_preference_generation.ipynb | 선호 데이터 |
+| 필터 클래스 | src/filtering/quality_filter.py | 필터 구현 |
+| 선호 빌더 | src/preference/preference_builder.py | 선호 쌍 생성 |
+| Filtered 데이터 | data/filtered/instructions_filtered.json | 10,000개 |
+| Preference 데이터 | data/preference/preference_pairs.json | 10,000개 |
+
+---
+
+## 5. Week 3: Fine-tuning
+
+### 5.1 Day 1-3: SFT (Supervised Fine-Tuning)
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| 데이터셋 준비 | SFT 포맷 변환 | 1시간 |
+| LoRA 설정 | 하이퍼파라미터 튜닝 | 1시간 |
+| Llama-3.2-3B SFT | 학습 실행 | 6-8시간 |
+| Mistral-7B SFT | 학습 실행 | 8-10시간 |
+| Qwen2.5-3B SFT | 학습 실행 | 6-8시간 |
+
+#### LoRA 설정
+```python
+LORA_CONFIG = {
+    "r": 8,
+    "lora_alpha": 16,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj"],
+    "lora_dropout": 0.05,
+    "bias": "none",
+    "task_type": "CAUSAL_LM"
+}
+
+TRAINING_ARGS = {
+    "num_train_epochs": 3,
+    "per_device_train_batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 2e-4,
+    "warmup_ratio": 0.03,
+    "save_steps": 500,
+    "logging_steps": 100
+}
+```
+
+#### 학습 스케줄
+```
+Day 1 밤: Llama-3.2-3B SFT 시작
+Day 2 아침: 체크포인트 확인
+Day 2 밤: Mistral-7B SFT 시작 (또는 Llama 계속)
+Day 3: Qwen2.5-3B SFT + 전체 검증
+```
+
+#### 체크포인트
+- [ ] SFT 데이터셋 준비 완료
+- [ ] Llama-3.2-3B SFT 완료
+- [ ] Mistral-7B SFT 완료
+- [ ] Qwen2.5-3B SFT 완료
+- [ ] models/sft/ 폴더에 3개 체크포인트 저장
+
+### 5.2 Day 4-5: DPO (Direct Preference Optimization)
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| DPO 데이터셋 준비 | 포맷 변환 | 1시간 |
+| Llama-3.2-3B DPO | SFT 체크포인트에서 시작 | 4-6시간 |
+| Mistral-7B DPO | SFT 체크포인트에서 시작 | 5-7시간 |
+| Qwen2.5-3B DPO | SFT 체크포인트에서 시작 | 4-6시간 |
+
+#### DPO 설정
+```python
+DPO_CONFIG = {
+    "beta": 0.1,
+    "learning_rate": 5e-5,
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 2,
+    "gradient_accumulation_steps": 8
+}
+```
+
+#### 체크포인트
+- [ ] DPO 데이터셋 준비 완료
+- [ ] Llama-3.2-3B DPO 완료
+- [ ] Mistral-7B DPO 완료
+- [ ] Qwen2.5-3B DPO 완료
+- [ ] models/dpo/ 폴더에 3개 최종 체크포인트 저장
+
+### 5.3 Week 3 산출물
+| 산출물 | 경로 | 설명 |
+|--------|------|------|
+| SFT 노트북 | notebooks/05_sft_training.ipynb | SFT 학습 |
+| DPO 노트북 | notebooks/06_dpo_training.ipynb | DPO 학습 |
+| SFT 모델 | models/sft/{llama,mistral,qwen}/ | 3개 |
+| DPO 모델 | models/dpo/{llama,mistral,qwen}/ | 3개 |
+
+---
+
+## 6. Week 4: 평가 + 문서화
+
+### 6.1 Day 1-2: 벤치마크 평가
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| lm-eval 설정 | 환경 구성 | 1시간 |
+| Base 모델 평가 | 3개 모델 × 3개 벤치마크 | 3-4시간 |
+| SFT 모델 평가 | 3개 모델 × 3개 벤치마크 | 3-4시간 |
+| DPO 모델 평가 | 3개 모델 × 3개 벤치마크 | 3-4시간 |
+| 결과 분석 | 비교 테이블, 차트 | 2시간 |
+
+#### 평가 명령어
+```bash
+# IFEval 평가
+lm_eval --model hf \
+    --model_args pretrained=./models/dpo/llama \
+    --tasks ifeval \
+    --batch_size 4 \
+    --output_path ./evaluation/results/llama_dpo_ifeval.json
+
+# MT-Bench, MMLU도 동일 방식
+```
+
+#### 체크포인트
+- [ ] Base 모델 3개 평가 완료
+- [ ] SFT 모델 3개 평가 완료
+- [ ] DPO 모델 3개 평가 완료
+- [ ] 비교 테이블 생성 완료
+
+### 6.2 Day 3: Agent 평가 (추가)
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| AgentBench 설정 | 환경 구성 | 1시간 |
+| DPO 모델 평가 | 3개 모델 평가 | 2-3시간 |
+| 결과 분석 | 기존 결과와 통합 | 1시간 |
+
+#### 체크포인트
+- [ ] AgentBench 설정 완료
+- [ ] 3개 DPO 모델 Agent 평가 완료
+- [ ] 결과 통합 완료
+
+### 6.3 Day 4-5: 문서화 + 발표 준비
+
+#### 작업 목록
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| 기술 보고서 작성 | 전체 과정 설명 | 4-6시간 |
+| 발표 자료 제작 | PPT/Slides | 3-4시간 |
+| 코드 정리 | 주석, README | 2시간 |
+| Hugging Face 업로드 | 모델 + 데이터셋 | 2시간 |
+
+#### 보고서 구조
+```markdown
+1. 서론 - 프로젝트 목적, 배경
+2. 관련 연구 - Magpie, DPO, LoRA
+3. 방법론 - 파이프라인 설명
+4. 실험 설정 - 모델, 데이터, 하이퍼파라미터
+5. 결과 - 벤치마크 결과, 분석
+6. 논의 - 성공 요인, 한계점
+7. 결론
+```
+
+#### 체크포인트
+- [ ] 기술 보고서 완성
+- [ ] 발표 자료 완성
+- [ ] README.md 작성 완료
+- [ ] Hugging Face Hub 업로드 완료
+
+### 6.4 Week 4 산출물
+| 산출물 | 경로 | 설명 |
+|--------|------|------|
+| 평가 노트북 | notebooks/07_benchmark_evaluation.ipynb | 벤치마크 |
+| Agent 노트북 | notebooks/08_agent_evaluation.ipynb | AgentBench |
+| 평가 결과 | evaluation/results/ | JSON 파일들 |
+| 비교 테이블 | evaluation/comparison_table.md | 결과 정리 |
+| 시각화 | evaluation/figures/ | 차트 이미지 |
+| 기술 보고서 | docs/TECHNICAL_REPORT.md | 상세 보고서 |
+
+---
+
+## 7. 마일스톤
+
+| 마일스톤 | 완료 기준 | 목표일 |
+|----------|----------|--------|
+| M1: 환경 준비 | Colab + 모델 로딩 성공 | Week 1 Day 2 |
+| M2: 데이터 생성 | 15,000개 raw 데이터 | Week 1 Day 5 |
+| M3: 데이터 정제 | 10,000개 filtered + 10,000 preference | Week 2 Day 5 |
+| M4: SFT 완료 | 3개 모델 SFT 체크포인트 | Week 3 Day 3 |
+| M5: DPO 완료 | 3개 모델 최종 체크포인트 | Week 3 Day 5 |
+| M6: 평가 완료 | 모든 벤치마크 결과 | Week 4 Day 3 |
+| M7: 프로젝트 완료 | 보고서 + 발표 자료 | Week 4 Day 5 |
+
+---
+
+## 8. 리스크 대응 계획
+
+### 8.1 시간 지연 시
+| 상황 | 대응 |
+|------|------|
+| 데이터 생성 지연 | 10,000개로 축소 |
+| 모델 학습 지연 | Mistral-7B 제외 (3B 2개만) |
+| 평가 지연 | IFEval만 필수, 나머지 선택 |
+
+### 8.2 기술적 문제 시
+| 상황 | 대응 |
+|------|------|
+| GPU OOM | 배치 크기 2로 축소, gradient accumulation 증가 |
+| 모델 수렴 실패 | learning rate 조정, epoch 증가 |
+| Colab 끊김 | 체크포인트에서 재시작 |
+
+---
+
+## 9. 변경 이력
+
+| 버전 | 날짜 | 변경 내용 | 작성자 |
+|------|------|----------|--------|
+| 1.0 | TBD | 초기 작성 | - |
+
+---
+
+*본 계획서는 프로젝트 진행 중 상황에 따라 수정될 수 있습니다.*

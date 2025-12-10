@@ -1,0 +1,31 @@
+# Synthetic Instruction Tuner - Requirements
+# Python 3.10+ required
+
+# Core ML Libraries
+torch>=2.1.0
+transformers>=4.36.0
+datasets>=2.16.0
+accelerate>=0.25.0
+
+# Fine-tuning
+peft>=0.7.0
+trl>=0.7.4
+bitsandbytes>=0.41.3
+
+# Evaluation
+lm-eval>=0.4.0
+
+# Tokenizer Dependencies
+sentencepiece
+protobuf
+
+# Utilities
+pandas
+numpy
+matplotlib
+seaborn
+tqdm
+jsonlines
+
+# Hugging Face Hub
+huggingface_hub
