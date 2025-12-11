@@ -15,8 +15,7 @@
 ### 1.2 Project Objectives
 
 1. **Academic Goal**: Fulfill final project requirements for the LLM course
-2. **Practical Goal**: Prepare for Dragon LLM Internship (Synthetic Data Generation for Agentic LLMs)
-3. **Technical Goal**: Build an End-to-End pipeline from synthetic data generation to fine-tuning and evaluation
+2. **Technical Goal**: Build an End-to-End pipeline from synthetic data generation to fine-tuning and evaluation
 
 ### 1.3 Project Duration
 
@@ -47,19 +46,6 @@ Key requirements extracted from lecture transcripts:
 | Report                    | Include process explanation                                     | Mandatory  |
 | Presentation              | Presentation materials                                          | Mandatory  |
 | **Process Understanding** | **Understanding the process is more important than the result** | **Core**   |
-
-### 2.2 Dragon LLM Internship Relevance
-
-**Role**: Synthetic Data Generation for Agentic LLMs (6 months, Paris)
-
-| Internship Requirement              | Project Response                |
-| ----------------------------------- | ------------------------------- |
-| Synthetic instruction data pipeline | Magpie-style data generation    |
-| Reinforcement data pipeline         | Preference learning via DPO     |
-| Fine-tuning with RL                 | SFT + DPO pipeline              |
-| lm-evaluation-harness               | Standard benchmark evaluation   |
-| Hugging Face Experience (Mandatory) | Utilize transformers, TRL, PEFT |
-| Result Publication                  | GitHub + Hugging Face Hub       |
 
 ---
 
