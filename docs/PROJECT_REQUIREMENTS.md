@@ -103,9 +103,9 @@
 #### 3.3.1 생성 데이터 규모
 | 데이터 유형 | 목표 수량 | 용도 |
 |------------|----------|------|
-| Raw Instructions | 15,000개 | 초기 생성 |
-| Filtered Instructions | 10,000개 | 필터링 후 |
-| Preference Pairs | 10,000개 | DPO 학습용 |
+| Raw Instructions | 1,500개 | 초기 생성 |
+| Filtered Instructions | 1,000개 | 필터링 후 |
+| Preference Pairs | 600개 | DPO 학습용 |
 
 #### 3.3.2 데이터 품질 기준
 - **길이**: 20~500 단어
@@ -126,7 +126,7 @@
 처리: Llama-3.1-8B-Instruct가 자동으로 instruction 생성
       이어서 response도 생성
 
-출력: {instruction, response} 쌍 15,000개
+출력: {instruction, response} 쌍 1,500개
 ```
 
 #### 4.1.2 구현 요구사항
@@ -141,7 +141,7 @@
 
 #### 4.2.1 규칙 기반 필터링
 ```
-입력: 15,000개 raw instruction-response 쌍
+입력: 1,500개 raw instruction-response 쌍
 
 필터:
 1. 길이 검증 (20-500 단어)
@@ -150,7 +150,7 @@
 4. 거부 응답 필터 ("I'm an AI", "I cannot" 등)
 5. 언어 일관성 (영어만)
 
-출력: 10,000개 고품질 데이터
+출력: 1,000개 고품질 데이터
 ```
 
 #### 4.2.2 구현 요구사항
@@ -164,14 +164,14 @@
 
 #### 4.3.1 다중 모델 응답 생성
 ```
-입력: 10,000개 instruction
+입력: 1,000개 instruction
 
 처리:
 1. 각 instruction에 대해 3개 모델이 응답 생성
 2. OpenAssistant Reward Model로 점수 매김
 3. 최고 점수 vs 최저 점수 선택
 
-출력: {instruction, chosen, rejected} 쌍 10,000개
+출력: {instruction, chosen, rejected} 쌍 600개
 ```
 
 #### 4.3.2 구현 요구사항
@@ -185,7 +185,7 @@
 
 #### 4.4.1 SFT (Supervised Fine-Tuning)
 ```
-입력: 10,000개 instruction-response 쌍
+입력: 1,000개 instruction-response 쌍
 모델: 3개 base 모델 각각
 
 설정:
@@ -200,7 +200,7 @@
 
 #### 4.4.2 DPO (Direct Preference Optimization)
 ```
-입력: 10,000개 preference 쌍
+입력: 600개 preference 쌍
 모델: 3개 SFT 체크포인트
 
 설정:
@@ -331,15 +331,15 @@ synthetic-instruction-tuner/
 ### 7.4 데이터 산출물
 | 데이터셋 | 규모 | 공개 |
 |----------|------|------|
-| Synthetic Instructions | 10,000개 | Hugging Face Hub |
-| Preference Pairs | 10,000개 | Hugging Face Hub |
+| Synthetic Instructions | 1,000개 | Hugging Face Hub |
+| Preference Pairs | 600개 | Hugging Face Hub |
 
 ---
 
 ## 8. 성공 기준
 
 ### 8.1 필수 성공 기준
-- [ ] 합성 데이터 10,000개 이상 생성
+- [ ] 합성 데이터 1,000개 이상 생성
 - [ ] 3개 모델 SFT+DPO 완료
 - [ ] IFEval, MT-Bench, MMLU 평가 완료
 - [ ] Base 대비 성능 향상 확인

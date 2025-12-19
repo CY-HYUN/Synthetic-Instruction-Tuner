@@ -32,22 +32,21 @@ PROJECT_PATH = "/content/drive/MyDrive/synthetic-instruction-tuner"
 
 ### 2.1 핵심 라이브러리
 ```bash
-# Colab 설치 스크립트
-!pip install -q transformers==4.36.0
-!pip install -q peft==0.7.0
-!pip install -q trl==0.7.4
-!pip install -q datasets==2.16.0
-!pip install -q accelerate==0.25.0
-!pip install -q bitsandbytes==0.41.3
-!pip install -q lm-eval==0.4.0
-!pip install -q sentencepiece
-!pip install -q protobuf
+# Colab 설치 스크립트 (최신 호환 버전)
+!pip install -q --upgrade transformers>=4.41.0
+!pip install -q --upgrade peft>=0.7.0
+!pip install -q --upgrade trl>=0.7.4
+!pip install -q --upgrade datasets>=2.16.0
+!pip install -q --upgrade accelerate>=0.25.0
+!pip install -q --upgrade bitsandbytes>=0.41.3
+!pip install -q lm-eval
+!pip install -q sentencepiece protobuf
 ```
 
 ### 2.2 패키지 설명
 | 패키지 | 버전 | 용도 |
 |--------|------|------|
-| transformers | 4.36+ | 모델 로딩, 토크나이저, 추론 |
+| transformers | 4.41+ | 모델 로딩, 토크나이저, 추론 |
 | peft | 0.7+ | LoRA 구현, 파라미터 효율적 미세조정 |
 | trl | 0.7+ | SFTTrainer, DPOTrainer |
 | datasets | 2.16+ | 데이터셋 관리, 전처리 |
@@ -88,34 +87,23 @@ model = AutoModelForCausalLM.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 ```
 
-### 3.2 미세조정 대상 모델 (3개)
+### 3.2 미세조정 대상 모델
 
-#### Llama-3.2-3B
+**주 모델 (비교 분석용)**:
 ```python
 MODEL_ID = "meta-llama/Llama-3.2-3B"
 # - 파라미터: 3B
 # - VRAM 요구량: ~6GB (4-bit)
 # - 특징: 최신 Llama 아키텍처, 효율적
 # - 접근: Llama 3.2 라이센스 동의 필요
+# - 용도: LoRA, Prompt Tuning, DPO 비교 실험
 ```
 
-#### Mistral-7B-v0.1
-```python
-MODEL_ID = "mistralai/Mistral-7B-v0.1"
-# - 파라미터: 7B
-# - VRAM 요구량: ~8GB (4-bit)
-# - 특징: Sliding Window Attention, 높은 성능
-# - 접근: 공개 모델 (라이센스 동의 불필요)
-```
+**대안 모델 (선택사항)**:
+- **Mistral-7B-v0.1**: 7B, Sliding Window Attention
+- **Qwen2.5-3B**: 3B, 다국어 지원
 
-#### Qwen2.5-3B
-```python
-MODEL_ID = "Qwen/Qwen2.5-3B"
-# - 파라미터: 3B
-# - VRAM 요구량: ~6GB (4-bit)
-# - 특징: 다국어 지원, 중국 Alibaba 개발
-# - 접근: 공개 모델
-```
+**Note**: 과제 요구사항 충족을 위해 단일 모델(Llama-3.2-3B)에 여러 적응 방법(LoRA, Prompt Tuning, DPO) 적용하여 비교
 
 ### 3.3 Reward Model
 ```python

@@ -104,9 +104,9 @@ Key requirements extracted from lecture transcripts:
 
 | Data Type             | Target Quantity | Purpose            |
 | --------------------- | --------------- | ------------------ |
-| Raw Instructions      | 15,000 items    | Initial Generation |
-| Filtered Instructions | 10,000 items    | After Filtering    |
-| Preference Pairs      | 10,000 items    | For DPO Training   |
+| Raw Instructions      | 1,500 items     | Initial Generation |
+| Filtered Instructions | 1,000 items     | After Filtering    |
+| Preference Pairs      | 600 items       | For DPO Training   |
 
 #### 3.3.2 Data Quality Standards
 
@@ -129,7 +129,7 @@ Input: Only template prompt provided
 Process: Llama-3.1-8B-Instruct automatically generates instruction
          Then generates response as well
 
-Output: 15,000 {instruction, response} pairs
+Output: 1,500 {instruction, response} pairs
 ```
 
 #### 4.1.2 Implementation Requirements
@@ -146,7 +146,7 @@ Output: 15,000 {instruction, response} pairs
 #### 4.2.1 Rule-based Filtering
 
 ```
-Input: 15,000 raw instruction-response pairs
+Input: 1,500 raw instruction-response pairs
 
 Filter:
 1. Length Verification (20-500 words)
@@ -155,7 +155,7 @@ Filter:
 4. Refusal Response Filter ("I'm an AI", "I cannot", etc.)
 5. Language Consistency (English only)
 
-Output: 10,000 High-Quality Data
+Output: 1,000 High-Quality Data
 ```
 
 #### 4.2.2 Implementation Requirements
@@ -171,14 +171,14 @@ Output: 10,000 High-Quality Data
 #### 4.3.1 Multi-Model Response Generation
 
 ```
-Input: 10,000 instructions
+Input: 1,000 instructions
 
 Process:
 1. 3 models generate responses for each instruction
 2. Score with OpenAssistant Reward Model
 3. Select highest score vs lowest score
 
-Output: 10,000 {instruction, chosen, rejected} pairs
+Output: 600 {instruction, chosen, rejected} pairs
 ```
 
 #### 4.3.2 Implementation Requirements
@@ -194,7 +194,7 @@ Output: 10,000 {instruction, chosen, rejected} pairs
 #### 4.4.1 SFT (Supervised Fine-Tuning)
 
 ```
-Input: 10,000 instruction-response pairs
+Input: 1,000 instruction-response pairs
 Model: Each of the 3 base models
 
 Settings:
@@ -210,7 +210,7 @@ Output: 3 SFT Model Checkpoints
 #### 4.4.2 DPO (Direct Preference Optimization)
 
 ```
-Input: 10,000 preference pairs
+Input: 600 preference pairs
 Model: 3 SFT Checkpoints
 
 Settings:
@@ -355,8 +355,8 @@ synthetic-instruction-tuner/
 
 | Dataset                | Scale        | Public           |
 | ---------------------- | ------------ | ---------------- |
-| Synthetic Instructions | 10,000 items | Hugging Face Hub |
-| Preference Pairs       | 10,000 items | Hugging Face Hub |
+| Synthetic Instructions | 1,000 items | Hugging Face Hub |
+| Preference Pairs       | 600 items   | Hugging Face Hub |
 
 ---
 
@@ -364,7 +364,7 @@ synthetic-instruction-tuner/
 
 ### 8.1 Mandatory Success Criteria
 
-- [ ] Generate over 10,000 synthetic data items
+- [ ] Generate over 1,000 synthetic data items
 - [ ] Complete SFT+DPO for 3 models
 - [ ] Complete IFEval, MT-Bench, MMLU evaluations
 - [ ] Confirm performance improvement over Base

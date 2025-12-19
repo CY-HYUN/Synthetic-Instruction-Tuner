@@ -1,0 +1,79 @@
+{
+  "models": {
+    "data_generation": "meta-llama/Llama-3.1-8B-Instruct",
+    "fine_tuning": "meta-llama/Llama-3.2-3B",
+    "reward_model": "OpenAssistant/reward-model-deberta-v3-large-v2"
+  },
+  "data_generation": {
+    "target_raw_samples": 1500,
+    "target_filtered_samples": 1000,
+    "target_preference_pairs": 600,
+    "checkpoint_interval": 20,
+    "temperature": 1.0,
+    "max_new_tokens": 512
+  },
+  "quality_filter": {
+    "min_instruction_words": 3,
+    "max_instruction_words": 500,
+    "min_response_words": 10,
+    "max_response_words": 2000,
+    "min_quality_score": 0.5,
+    "max_repetition_ratio": 0.3
+  },
+  "training": {
+    "sft": {
+      "num_epochs": 3,
+      "batch_size": 4,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 2e-4,
+      "warmup_ratio": 0.03,
+      "max_seq_length": 2048,
+      "train_split": 0.8,
+      "val_split": 0.2
+    },
+    "prompt_tuning": {
+      "num_virtual_tokens": 20,
+      "num_epochs": 3,
+      "batch_size": 4,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 3e-4,
+      "warmup_ratio": 0.03
+    },
+    "dpo": {
+      "num_epochs": 1,
+      "batch_size": 2,
+      "gradient_accumulation_steps": 8,
+      "learning_rate": 5e-5,
+      "beta": 0.1,
+      "warmup_ratio": 0.1,
+      "max_seq_length": 1024,
+      "train_split": 0.8,
+      "val_split": 0.2
+    }
+  },
+  "lora": {
+    "r": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "bias": "none"
+  },
+  "paths": {
+    "data_raw": "/content/drive/MyDrive/synthetic-instruction-tuner/data/raw",
+    "data_filtered": "/content/drive/MyDrive/synthetic-instruction-tuner/data/filtered",
+    "data_preference": "/content/drive/MyDrive/synthetic-instruction-tuner/data/preference",
+    "models_sft": "/content/drive/MyDrive/synthetic-instruction-tuner/models/sft",
+    "models_prompt_tuning": "/content/drive/MyDrive/synthetic-instruction-tuner/models/prompt_tuning",
+    "models_dpo": "/content/drive/MyDrive/synthetic-instruction-tuner/models/dpo",
+    "evaluation_results": "/content/drive/MyDrive/synthetic-instruction-tuner/evaluation/results",
+    "evaluation_figures": "/content/drive/MyDrive/synthetic-instruction-tuner/evaluation/figures"
+  }
+}

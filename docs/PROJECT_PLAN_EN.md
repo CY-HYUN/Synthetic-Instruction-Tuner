@@ -58,14 +58,14 @@ Week 4: Evaluation + Documentation + Presentation Preparation
 | Task                   | Description                   | Estimated Time         |
 | ---------------------- | ----------------------------- | ---------------------- |
 | Magpie Generator Class | Template-based Generation     | 3 hours                |
-| Instruction Generation | Target 15,000                 | 8-10 hours (Overnight) |
+| Instruction Generation | Target 1,500                  | 8-10 hours (Overnight) |
 | Response Generation    | Response for each instruction | 8-10 hours (Overnight) |
 | Data Storage           | JSON/Parquet Format           | 1 hour                 |
 
 #### Generation Strategy
 
 ```
-Day 3 Night: Start Instruction Generation (Target 5,000)
+Day 3 Night: Start Instruction Generation (Target 500)
 Day 4 Morning: Check Checkpoints, Restart
 Day 4 Night: Complete Instruction + Start Response Generation
 Day 5: Complete Response, Data Verification
@@ -74,8 +74,8 @@ Day 5: Complete Response, Data Verification
 #### Checkpoints
 
 - [ ] MagpieGenerator Class Implementation Complete
-- [ ] Instruction 15,000 Generation Complete
-- [ ] Response 15,000 Generation Complete
+- [ ] Instruction 1,500 Generation Complete
+- [ ] Response 1,500 Generation Complete
 - [ ] Save data/raw/instructions_raw.json
 
 ### 3.3 Week 1 Deliverables
@@ -85,7 +85,7 @@ Day 5: Complete Response, Data Verification
 | Setup Notebook      | notebooks/01_setup.ipynb                | Environment Setup     |
 | Generation Notebook | notebooks/02_magpie_generation.ipynb    | Data Generation       |
 | Generator Class     | src/data_generation/magpie_generator.py | Magpie Implementation |
-| Raw Data            | data/raw/instructions_raw.json          | 15,000 items          |
+| Raw Data            | data/raw/instructions_raw.json          | 1,500 items           |
 
 ---
 
@@ -98,7 +98,7 @@ Day 5: Complete Response, Data Verification
 | Task                        | Description              | Estimated Time |
 | --------------------------- | ------------------------ | -------------- |
 | Filter Class Implementation | 5 Filter Rules           | 3 hours        |
-| Execute Filtering           | 15,000 → 10,000          | 1 hour         |
+| Execute Filtering           | 1,500 → 1,000            | 1 hour         |
 | Statistical Analysis        | Removal Count by Filter  | 1 hour         |
 | Result Verification         | Manual Review of Samples | 1 hour         |
 
@@ -120,7 +120,7 @@ FILTER_CONFIG = {
 #### Checkpoints
 
 - [ ] QualityFilter Class Implementation Complete
-- [ ] Filtering Complete (Over 10,000 passed)
+- [ ] Filtering Complete (Over 1,000 passed)
 - [ ] Generate Statistical Report
 - [ ] Save data/filtered/instructions_filtered.json
 
@@ -152,7 +152,7 @@ for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
 
 - [ ] 3 Models Response Generation Complete
 - [ ] Reward Model Scoring Complete
-- [ ] Generate 10,000 Preference Pairs
+- [ ] Generate 600 Preference Pairs
 - [ ] Save data/preference/preference_pairs.json
 
 ### 4.3 Week 2 Deliverables
@@ -163,8 +163,8 @@ for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
 | Preference Generation Notebook | notebooks/04_preference_generation.ipynb | Preference Data            |
 | Filter Class                   | src/filtering/quality_filter.py          | Filter Implementation      |
 | Preference Builder             | src/preference/preference_builder.py     | Preference Pair Generation |
-| Filtered Data                  | data/filtered/instructions_filtered.json | 10,000 items               |
-| Preference Data                | data/preference/preference_pairs.json    | 10,000 items               |
+| Filtered Data                  | data/filtered/instructions_filtered.json | 1,000 items                |
+| Preference Data                | data/preference/preference_pairs.json    | 600 items                  |
 
 ---
 
@@ -362,8 +362,8 @@ lm_eval --model hf \
 | Milestone               | Completion Criteria                 | Target Date  |
 | ----------------------- | ----------------------------------- | ------------ |
 | M1: Environment Prep    | Colab + Model Loading Success       | Week 1 Day 2 |
-| M2: Data Generation     | 15,000 raw data items               | Week 1 Day 5 |
-| M3: Data Cleaning       | 10,000 filtered + 10,000 preference | Week 2 Day 5 |
+| M2: Data Generation     | 1,500 raw data items                | Week 1 Day 5 |
+| M3: Data Cleaning       | 1,000 filtered + 600 preference     | Week 2 Day 5 |
 | M4: SFT Complete        | 3 Model SFT Checkpoints             | Week 3 Day 3 |
 | M5: DPO Complete        | 3 Model Final Checkpoints           | Week 3 Day 5 |
 | M6: Evaluation Complete | All Benchmark Results               | Week 4 Day 3 |
@@ -377,7 +377,7 @@ lm_eval --model hf \
 
 | Situation             | Response                              |
 | --------------------- | ------------------------------------- |
-| Data Generation Delay | Reduce to 10,000                      |
+| Data Generation Delay | Reduce to 1,000                       |
 | Model Training Delay  | Exclude Mistral-7B (Only 2 3B models) |
 | Evaluation Delay      | IFEval Mandatory, Others Optional     |
 

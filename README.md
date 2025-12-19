@@ -8,11 +8,13 @@
 
 ## Overview
 
-Complete pipeline for fine-tuning instruction-following LLMs using entirely free resources:
+**NLP Task**: Instruction-Following Text Generation for Multi-Domain Dialogue Systems
 
-1. **Magpie Data Generation** - 15K synthetic instruction-response pairs
-2. **Quality Filtering** - Rule-based filtering to 10K high-quality samples
-3. **Preference Generation** - 5-8K preference pairs with reward model
+This project develops an instruction-following LLM capable of generating high-quality responses across various domains (coding, reasoning, creative writing, etc.) through a complete zero-cost synthetic data pipeline:
+
+1. **Magpie Data Generation** - 1.5K synthetic instruction-response pairs
+2. **Quality Filtering** - Rule-based filtering to 1K high-quality samples
+3. **Preference Generation** - 600 preference pairs with reward model
 4. **SFT Training** - Supervised fine-tuning with LoRA
 5. **DPO Training** - Direct preference optimization
 6. **Evaluation** - Benchmarks + agent capability tests
@@ -30,7 +32,7 @@ Complete pipeline for fine-tuning instruction-following LLMs using entirely free
 | Notebook | Description | Time |
 |----------|-------------|------|
 | `01_setup.ipynb` | Environment setup | 10 min |
-| `02_magpie_generation.ipynb` | Generate synthetic data | 8-10 hrs |
+| `02_magpie_generation.ipynb` | Generate synthetic data | 16-17 hrs |
 | `03_quality_filtering.ipynb` | Filter data | 30 min |
 | `04_preference_generation.ipynb` | Create preference pairs | 6-8 hrs |
 | `05_sft_training.ipynb` | SFT training | 6-8 hrs |
@@ -65,7 +67,7 @@ synthetic-instruction-tuner/
 
 ### Data Pipeline
 ```
-15K raw samples → 10K filtered → 5-8K preference pairs → Fine-tuned model
+1.5K raw samples → 1K filtered → 600 preference pairs → Fine-tuned model
 ```
 
 ## Results
