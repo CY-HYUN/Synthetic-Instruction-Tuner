@@ -97,6 +97,7 @@ prompt = "<|user|>\n"  # Model generates instruction
 
 **Base Model**: Llama-3.2-3B (4-bit quantized)
 
+**T4 Configuration** (Default):
 | Config | LoRA | Prompt Tuning | DPO |
 |--------|------|---------------|-----|
 | Epochs | 3 | 3 | 1 |
@@ -104,7 +105,13 @@ prompt = "<|user|>\n"  # Model generates instruction
 | Learning Rate | 2e-4 | 3e-4 | 5e-5 |
 | Training Time | ~6h | ~3h | ~4h |
 
-**Hardware**: Google Colab T4 (15GB VRAM)
+**A100 Configuration** (Optimized):
+| Config | LoRA | Prompt Tuning | DPO |
+|--------|------|---------------|-----|
+| Batch Size | 12 | 12 | 8 |
+| Training Time | ~2-4h | ~2-3h | ~1-2h |
+
+**Hardware**: Google Colab T4 (15GB) / A100 (40GB)
 
 ---
 

@@ -8,7 +8,7 @@
     "target_raw_samples": 1500,
     "target_filtered_samples": 1000,
     "target_preference_pairs": 600,
-    "checkpoint_interval": 100,
+    "checkpoint_interval": 20,
     "temperature": 1.0,
     "max_new_tokens": 512
   },
@@ -21,24 +21,41 @@
     "max_repetition_ratio": 0.3
   },
   "training": {
-    "sft_epochs": 3,
-    "sft_batch_size": 12,
-    "sft_learning_rate": 2e-4,
-    "sft_warmup_ratio": 0.03,
-    "sft_max_seq_length": 2048,
-    "dpo_epochs": 1,
-    "dpo_batch_size": 8,
-    "dpo_learning_rate": 5e-5,
-    "dpo_beta": 0.1,
-    "dpo_warmup_ratio": 0.1,
-    "dpo_max_seq_length": 1024,
-    "gradient_accumulation_steps": 2,
-    "train_split": 0.8,
-    "val_split": 0.2,
-    "lora_r": 8,
+    "sft": {
+      "num_epochs": 3,
+      "batch_size": 4,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 2e-4,
+      "warmup_ratio": 0.03,
+      "max_seq_length": 2048,
+      "train_split": 0.8,
+      "val_split": 0.2
+    },
+    "prompt_tuning": {
+      "num_virtual_tokens": 20,
+      "num_epochs": 3,
+      "batch_size": 4,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 3e-4,
+      "warmup_ratio": 0.03
+    },
+    "dpo": {
+      "num_epochs": 1,
+      "batch_size": 2,
+      "gradient_accumulation_steps": 8,
+      "learning_rate": 5e-5,
+      "beta": 0.1,
+      "warmup_ratio": 0.1,
+      "max_seq_length": 1024,
+      "train_split": 0.8,
+      "val_split": 0.2
+    }
+  },
+  "lora": {
+    "r": 8,
     "lora_alpha": 16,
     "lora_dropout": 0.05,
-    "lora_target_modules": [
+    "target_modules": [
       "q_proj",
       "k_proj",
       "v_proj",
@@ -47,13 +64,7 @@
       "up_proj",
       "down_proj"
     ],
-    "lora_bias": "none",
-    "prompt_tuning_num_virtual_tokens": 20,
-    "prompt_tuning_epochs": 3,
-    "prompt_tuning_batch_size": 4,
-    "prompt_tuning_gradient_accumulation": 4,
-    "prompt_tuning_learning_rate": 3e-4,
-    "prompt_tuning_warmup_ratio": 0.03
+    "bias": "none"
   },
   "paths": {
     "data_raw": "/content/drive/MyDrive/synthetic-instruction-tuner/data/raw",

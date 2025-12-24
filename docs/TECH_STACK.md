@@ -6,12 +6,28 @@
 ## 1. 개발 환경
 
 ### 1.1 Primary 환경: Google Colab
+
+**Colab Free (T4 GPU)**
 ```
 GPU: NVIDIA T4 (16GB VRAM) - 무료
-RAM: 12.7GB (무료) / 25GB (Pro)
+RAM: 12.7GB (무료)
 Storage: Google Drive 연동
-Runtime: 최대 12시간 (무료)
+Runtime: 최대 12시간 제한
 ```
+
+**Colab Pro (A100 GPU) - 최적화 완료 ⚡**
+```
+GPU: NVIDIA A100 (40GB VRAM) - Pro/Pro+
+RAM: 25-52GB
+Storage: Google Drive 연동
+Runtime: 무제한 (Pro+) / 24시간 (Pro)
+```
+
+**본 프로젝트는 Colab Pro A100에 최적화되어 있습니다:**
+- 배치 사이즈 3-4배 증가 (SFT: 12, DPO: 8)
+- 체크포인트 간격 최적화 (100 샘플)
+- 전체 파이프라인 2-3배 속도 향상
+- 단일 세션에서 전체 데이터셋 생성 가능
 
 ### 1.2 Colab 설정 방법
 ```python
@@ -191,17 +207,26 @@ lora_config = LoraConfig(
 | LoRA (r=8) | ~6GB | ~10GB |
 | LoRA (r=4) | ~5GB | ~8GB |
 
-### 5.3 권장 설정 (Colab T4 16GB)
+### 5.3 권장 설정
+
+**Colab T4 (16GB VRAM)**
 ```python
 # 3B 모델
 LORA_R = 8
 BATCH_SIZE = 4
 GRADIENT_ACCUMULATION = 4
+```
 
-# 7B 모델
+**Colab Pro A100 (40GB VRAM) - 최적화됨**
+```python
+# 3B 모델 - SFT
 LORA_R = 8
-BATCH_SIZE = 2
-GRADIENT_ACCUMULATION = 8
+BATCH_SIZE = 12              # T4 대비 3배
+GRADIENT_ACCUMULATION = 2    # 감소
+
+# 3B 모델 - DPO
+BATCH_SIZE = 8               # T4 대비 4배
+GRADIENT_ACCUMULATION = 2    # 감소
 ```
 
 ---
@@ -209,6 +234,8 @@ GRADIENT_ACCUMULATION = 8
 ## 6. Training Configuration
 
 ### 6.1 SFT Training Arguments
+
+**T4 설정 (기본)**
 ```python
 from transformers import TrainingArguments
 
@@ -224,29 +251,68 @@ sft_training_args = TrainingArguments(
     save_steps=500,
     save_total_limit=2,
     fp16=True,
-    optim="paged_adamw_8bit",
+    optim="paged_adamw_32bit",
     max_grad_norm=0.3,
     report_to="none"
 )
 ```
 
-### 6.2 DPO Training Arguments
+**A100 최적화 설정 (config.json에 반영됨)**
 ```python
-from trl import DPOConfig
+sft_training_args = TrainingArguments(
+    output_dir="./models/sft",
+    num_train_epochs=3,
+    per_device_train_batch_size=12,    # 4 → 12 (3배)
+    gradient_accumulation_steps=2,      # 4 → 2 (감소)
+    learning_rate=2e-4,
+    warmup_ratio=0.03,
+    lr_scheduler_type="cosine",
+    logging_steps=10,
+    save_steps=200,                     # 500 → 200
+    save_total_limit=3,
+    fp16=True,
+    optim="paged_adamw_32bit",
+    report_to="none"
+)
+# 예상 학습 시간: T4 6-10시간 → A100 2-4시간
+```
 
-dpo_config = DPOConfig(
+### 6.2 DPO Training Arguments
+
+**T4 설정 (기본)**
+```python
+from transformers import TrainingArguments
+
+dpo_config = TrainingArguments(
     output_dir="./models/dpo",
-    beta=0.1,
-    learning_rate=5e-5,
     num_train_epochs=1,
     per_device_train_batch_size=2,
     gradient_accumulation_steps=8,
+    learning_rate=5e-5,
     warmup_ratio=0.1,
     fp16=True,
     logging_steps=50,
     save_steps=200,
     report_to="none"
 )
+```
+
+**A100 최적화 설정 (config.json에 반영됨)**
+```python
+dpo_config = TrainingArguments(
+    output_dir="./models/dpo",
+    num_train_epochs=1,
+    per_device_train_batch_size=8,     # 2 → 8 (4배)
+    gradient_accumulation_steps=2,      # 8 → 2 (감소)
+    learning_rate=5e-5,
+    warmup_ratio=0.1,
+    fp16=True,
+    logging_steps=10,
+    save_steps=100,                     # 200 → 100
+    report_to="none"
+)
+# 예상 학습 시간: T4 4-6시간 → A100 1-2시간
+# 메모리 사용: ~30-35GB (policy + reference 모델 동시 로드)
 ```
 
 ---

@@ -10,8 +10,8 @@
 
 - **Project Name**: Synthetic Instruction Tuner
 - **Duration**: 4 Weeks
-- **Budget**: $0 (Free)
-- **Environment**: Google Colab (Free T4 GPU)
+- **Budget**: $0 (Free) / $10 (Colab Pro, Optional)
+- **Environment**: Google Colab (Free T4 GPU / Colab Pro A100 GPU)
 
 ### 1.2 Goal Summary
 
@@ -55,20 +55,27 @@ Week 4: Evaluation + Documentation + Presentation Preparation
 
 #### Task List
 
-| Task                   | Description                   | Estimated Time         |
-| ---------------------- | ----------------------------- | ---------------------- |
-| Magpie Generator Class | Template-based Generation     | 3 hours                |
-| Instruction Generation | Target 1,500                  | 8-10 hours (Overnight) |
-| Response Generation    | Response for each instruction | 8-10 hours (Overnight) |
-| Data Storage           | JSON/Parquet Format           | 1 hour                 |
+| Task                   | Description                   | T4 Time                | A100 Time        |
+| ---------------------- | ----------------------------- | ---------------------- | ---------------- |
+| Magpie Generator Class | Template-based Generation     | 3 hours                | 3 hours          |
+| Instruction Generation | Target 1,500                  | 8-10 hours (Overnight) | 3-4 hours        |
+| Response Generation    | Response for each instruction | 8-10 hours (Overnight) | 3-4 hours        |
+| Data Storage           | JSON/Parquet Format           | 1 hour                 | 1 hour           |
 
 #### Generation Strategy
 
+**T4 Strategy (12-hour runtime limit)**:
 ```
 Day 3 Night: Start Instruction Generation (Target 500)
 Day 4 Morning: Check Checkpoints, Restart
 Day 4 Night: Complete Instruction + Start Response Generation
 Day 5: Complete Response, Data Verification
+```
+
+**A100 Strategy (Single session - unlimited runtime)**:
+```
+Single Session: Generate all 1,500 samples continuously
+Checkpoint interval: 100 samples (optimized for speed)
 ```
 
 #### Checkpoints
@@ -174,16 +181,17 @@ for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
 
 #### Task List
 
-| Task                | Description           | Estimated Time |
-| ------------------- | --------------------- | -------------- |
-| Dataset Preparation | SFT Format Conversion | 1 hour         |
-| LoRA Setup          | Hyperparameter Tuning | 1 hour         |
-| Llama-3.2-3B SFT    | Execute Training      | 6-8 hours      |
-| Mistral-7B SFT      | Execute Training      | 8-10 hours     |
-| Qwen2.5-3B SFT      | Execute Training      | 6-8 hours      |
+| Task                | Description           | T4 Time    | A100 Time  |
+| ------------------- | --------------------- | ---------- | ---------- |
+| Dataset Preparation | SFT Format Conversion | 1 hour     | 1 hour     |
+| LoRA Setup          | Hyperparameter Tuning | 1 hour     | 1 hour     |
+| Llama-3.2-3B SFT    | Execute Training      | 6-8 hours  | 2-4 hours  |
+| Mistral-7B SFT      | Execute Training      | 8-10 hours | 3-5 hours  |
+| Qwen2.5-3B SFT      | Execute Training      | 6-8 hours  | 2-4 hours  |
 
 #### LoRA Setup
 
+**T4 Configuration (Default)**:
 ```python
 LORA_CONFIG = {
     "r": 8,
@@ -194,7 +202,7 @@ LORA_CONFIG = {
     "task_type": "CAUSAL_LM"
 }
 
-TRAINING_ARGS = {
+TRAINING_ARGS_T4 = {
     "num_train_epochs": 3,
     "per_device_train_batch_size": 4,
     "gradient_accumulation_steps": 4,
@@ -203,6 +211,20 @@ TRAINING_ARGS = {
     "save_steps": 500,
     "logging_steps": 100
 }
+```
+
+**A100 Configuration (Optimized)**:
+```python
+TRAINING_ARGS_A100 = {
+    "num_train_epochs": 3,
+    "per_device_train_batch_size": 12,    # 4 → 12 (3x increase)
+    "gradient_accumulation_steps": 2,      # 4 → 2 (reduced)
+    "learning_rate": 2e-4,
+    "warmup_ratio": 0.03,
+    "save_steps": 200,                     # 500 → 200 (more frequent)
+    "logging_steps": 10
+}
+# Expected time: T4 6-8h → A100 2-4h (2-3x faster)
 ```
 
 #### Training Schedule
@@ -226,23 +248,38 @@ Day 3: Qwen2.5-3B SFT + Full Verification
 
 #### Task List
 
-| Task                    | Description               | Estimated Time |
-| ----------------------- | ------------------------- | -------------- |
-| DPO Dataset Preparation | Format Conversion         | 1 hour         |
-| Llama-3.2-3B DPO        | Start from SFT Checkpoint | 4-6 hours      |
-| Mistral-7B DPO          | Start from SFT Checkpoint | 5-7 hours      |
-| Qwen2.5-3B DPO          | Start from SFT Checkpoint | 4-6 hours      |
+| Task                    | Description               | T4 Time   | A100 Time |
+| ----------------------- | ------------------------- | --------- | --------- |
+| DPO Dataset Preparation | Format Conversion         | 1 hour    | 1 hour    |
+| Llama-3.2-3B DPO        | Start from SFT Checkpoint | 4-6 hours | 1-2 hours |
+| Mistral-7B DPO          | Start from SFT Checkpoint | 5-7 hours | 2-3 hours |
+| Qwen2.5-3B DPO          | Start from SFT Checkpoint | 4-6 hours | 1-2 hours |
 
 #### DPO Setup
 
+**T4 Configuration (Default)**:
 ```python
-DPO_CONFIG = {
+DPO_CONFIG_T4 = {
     "beta": 0.1,
     "learning_rate": 5e-5,
     "num_train_epochs": 1,
     "per_device_train_batch_size": 2,
     "gradient_accumulation_steps": 8
 }
+```
+
+**A100 Configuration (Optimized)**:
+```python
+DPO_CONFIG_A100 = {
+    "beta": 0.1,
+    "learning_rate": 5e-5,
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 8,    # 2 → 8 (4x increase)
+    "gradient_accumulation_steps": 2,    # 8 → 2 (reduced)
+    "save_steps": 100                     # 200 → 100 (more frequent)
+}
+# Memory: ~30-35GB (policy + reference model loaded simultaneously)
+# Expected time: T4 4-6h → A100 1-2h (3-4x faster)
 ```
 
 #### Checkpoints

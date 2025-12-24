@@ -25,8 +25,9 @@
 
 ### 1.4 Budget
 
-- **Target Budget**: $0 (Completely Free)
-- **Max Allowable Budget**: $10 (Colab Pro 1 month, Optional)
+- **Target Budget**: $0 (Completely Free - Colab T4)
+- **Max Allowable Budget**: $10 (Colab Pro 1 month - A100, Optional)
+- **A100 Benefits**: 2-3x faster pipeline (33-43 hours → 13-20 hours)
 
 ---
 
@@ -72,9 +73,14 @@ Key requirements extracted from lecture transcripts:
 
 #### 3.1.3 Development Environment
 
-- **Primary**: Google Colab (T4 GPU, Free)
-- **Backup**: Colab Pro (A100/V100, $10/month)
+- **Primary**: Google Colab Free (T4 GPU, 16GB VRAM, Free)
+- **Recommended**: Colab Pro (A100 GPU, 40GB VRAM, $10/month) - **2-3x faster**
 - **Local**: VSCode + Python
+
+**A100 Optimizations Applied**:
+- SFT batch size: 4 → 12 (3x increase)
+- DPO batch size: 2 → 8 (4x increase)
+- Checkpoint interval: 20 → 100 (reduced disk I/O)
 
 ### 3.2 Model Requirements
 

@@ -110,6 +110,7 @@ Large Language Models have demonstrated remarkable capabilities in various NLP t
 
 ### 3.1 Training Configuration
 
+**T4 GPU Configuration** (Default):
 | Parameter | LoRA | Prompt Tuning | DPO |
 |-----------|------|---------------|-----|
 | Epochs | 3 | 3 | 1 |
@@ -117,6 +118,18 @@ Large Language Models have demonstrated remarkable capabilities in various NLP t
 | Learning Rate | 2e-4 | 3e-4 | 5e-5 |
 | Gradient Accumulation | 4 | 4 | 8 |
 | Max Sequence Length | 2048 | 2048 | 1024 |
+
+**A100 GPU Configuration** (Optimized):
+| Parameter | LoRA | Prompt Tuning | DPO |
+|-----------|------|---------------|-----|
+| Epochs | 3 | 3 | 1 |
+| Batch Size | 12 | 12 | 8 |
+| Learning Rate | 2e-4 | 3e-4 | 5e-5 |
+| Gradient Accumulation | 2 | 2 | 2 |
+| Max Sequence Length | 2048 | 2048 | 1024 |
+| Training Time | 2-4h | 2-3h | 1-2h |
+
+**Performance Improvement**: A100 training is 2-3x faster than T4 due to larger batch sizes and 40GB VRAM.
 
 ### 3.2 Training Curves
 

@@ -8,8 +8,8 @@
 ### 1.1 프로젝트 정보
 - **프로젝트명**: Synthetic Instruction Tuner
 - **기간**: 4주
-- **예산**: $0 (무료)
-- **환경**: Google Colab (무료 T4 GPU)
+- **예산**: $0 (무료) 또는 Colab Pro (월 $10)
+- **환경**: Google Colab Pro (A100 GPU, 최적화 완료) / T4 GPU 호환
 
 ### 1.2 목표 요약
 ```
@@ -62,11 +62,19 @@ Week 4: 평가 + 문서화 + 발표 준비
 | 데이터 저장 | JSON/Parquet 형식 | 1시간 |
 
 #### 생성 전략
+
+**T4 GPU (12시간 제한)**
 ```
 Day 3: 500개 생성 (5.5h, 20개마다 체크포인트)
 Day 4: 500개 생성 (5.5h, 20개마다 체크포인트)
 Day 5: 500개 생성 (5.5h, 20개마다 체크포인트)
 총: 1,500개 완료, 데이터 검증
+```
+
+**A100 GPU (최적화됨) ⚡**
+```
+Day 3: 1,500개 연속 생성 (6-8h, 100개마다 체크포인트)
+총: 한 세션에서 완료 가능
 ```
 
 #### 체크포인트
@@ -162,14 +170,24 @@ for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
 ### 5.1 Day 1-3: SFT with LoRA & Prompt Tuning
 
 #### 작업 목록
+
+**T4 GPU 기준**
 | 작업 | 설명 | 예상 시간 |
 |------|------|----------|
 | 데이터셋 준비 | SFT 포맷 변환 | 1시간 |
-| **LoRA SFT** | Llama-3.2-3B (r=8, alpha=16) | 6-8시간 |
+| **LoRA SFT** | Llama-3.2-3B (r=8, alpha=16) | 6-10시간 |
 | **Prompt Tuning** | Llama-3.2-3B (20 virtual tokens) | 3-5시간 |
 | 효율성 메트릭 수집 | 메모리, 시간, 파라미터 측정 | 통합 |
 
-#### LoRA 설정
+**A100 GPU (최적화됨) ⚡**
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| 데이터셋 준비 | SFT 포맷 변환 | 1시간 |
+| **LoRA SFT** | Batch 12, 최적화 설정 | 2-4시간 |
+| **Prompt Tuning** | Batch 4, 최적화 설정 | 1-2시간 |
+| 효율성 메트릭 수집 | 메모리, 시간, 파라미터 측정 | 통합 |
+
+#### LoRA 설정 (config.json에 반영됨)
 ```python
 LORA_CONFIG = {
     "r": 8,
@@ -179,6 +197,13 @@ LORA_CONFIG = {
     "lora_dropout": 0.05,
     "bias": "none",
     "task_type": "CAUSAL_LM"
+}
+
+# SFT Training (A100 최적화)
+SFT_TRAINING_ARGS_A100 = {
+    "batch_size": 12,                    # T4: 4 → A100: 12
+    "gradient_accumulation_steps": 2,    # T4: 4 → A100: 2
+    "save_steps": 200,                   # T4: 500 → A100: 200
 }
 
 PROMPT_TUNING_CONFIG = {
@@ -206,21 +231,42 @@ Day 3: Prompt Tuning 완료 + 비교 분석
 ### 5.2 Day 4-5: DPO (Direct Preference Optimization)
 
 #### 작업 목록
+
+**T4 GPU 기준**
 | 작업 | 설명 | 예상 시간 |
 |------|------|----------|
 | DPO 데이터셋 준비 | 포맷 변환 | 1시간 |
 | **DPO on LoRA** | LoRA 체크포인트에서 시작 | 4-6시간 |
 | 효율성 메트릭 수집 | DPO 메모리, 시간 측정 | 통합 |
 
-#### DPO 설정
+**A100 GPU (최적화됨) ⚡**
+| 작업 | 설명 | 예상 시간 |
+|------|------|----------|
+| DPO 데이터셋 준비 | 포맷 변환 | 1시간 |
+| **DPO on LoRA** | Batch 8, 최적화 설정 | 1-2시간 |
+| 효율성 메트릭 수집 | DPO 메모리, 시간 측정 | 통합 |
+
+#### DPO 설정 (config.json에 반영됨)
 ```python
-DPO_CONFIG = {
+# T4 기본
+DPO_CONFIG_T4 = {
     "beta": 0.1,
     "learning_rate": 5e-5,
     "num_train_epochs": 1,
     "per_device_train_batch_size": 2,
     "gradient_accumulation_steps": 8
 }
+
+# A100 최적화
+DPO_CONFIG_A100 = {
+    "beta": 0.1,
+    "learning_rate": 5e-5,
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 8,    # T4: 2 → A100: 8 (4배)
+    "gradient_accumulation_steps": 2,    # T4: 8 → A100: 2
+    "save_steps": 100                     # T4: 200 → A100: 100
+}
+# 메모리: ~30-35GB (policy + reference 모델 동시 로드)
 ```
 
 #### 체크포인트

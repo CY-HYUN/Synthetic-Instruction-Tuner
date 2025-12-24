@@ -19,7 +19,7 @@ This project develops an instruction-following LLM capable of generating high-qu
 5. **DPO Training** - Direct preference optimization
 6. **Evaluation** - Benchmarks + agent capability tests
 
-**Cost**: $0 (runs on free Google Colab T4 GPU)
+**Cost**: $0 (free Colab T4) or $10/month (Colab Pro A100 - **Optimized** ⚡)
 
 ## Quick Start
 
@@ -29,16 +29,18 @@ This project develops an instruction-following LLM capable of generating high-qu
 
 ### Run Notebooks Sequentially
 
-| Notebook | Description | Time |
-|----------|-------------|------|
-| `01_setup.ipynb` | Environment setup | 10 min |
-| `02_magpie_generation.ipynb` | Generate synthetic data | 16-17 hrs |
-| `03_quality_filtering.ipynb` | Filter data | 30 min |
-| `04_preference_generation.ipynb` | Create preference pairs | 6-8 hrs |
-| `05_sft_training.ipynb` | SFT training | 6-8 hrs |
-| `06_dpo_training.ipynb` | DPO training | 4-6 hrs |
-| `07_benchmark_evaluation.ipynb` | Evaluate models | 3-4 hrs |
-| `08_agent_evaluation.ipynb` | Agent benchmarks | 2-3 hrs |
+| Notebook | Description | T4 Time | A100 Time* |
+|----------|-------------|---------|------------|
+| `01_setup.ipynb` | Environment setup | 10 min | 10 min |
+| `02_magpie_generation.ipynb` | Generate synthetic data | 16-17 hrs | 6-8 hrs |
+| `03_quality_filtering.ipynb` | Filter data | 30 min | 30 min |
+| `04_preference_generation.ipynb` | Create preference pairs | 4-6 hrs | 2-3 hrs |
+| `05_sft_training.ipynb` | SFT training | 6-10 hrs | 2-4 hrs |
+| `06_dpo_training.ipynb` | DPO training | 4-6 hrs | 1-2 hrs |
+| `07_benchmark_evaluation.ipynb` | Evaluate models | 3-4 hrs | 2-3 hrs |
+| `08_agent_evaluation.ipynb` | Agent benchmarks | 2-3 hrs | 1-2 hrs |
+
+\* **A100 optimizations included**: Larger batch sizes (SFT: 12, DPO: 8), reduced checkpoint intervals (100)
 
 ## Project Structure
 
@@ -61,9 +63,16 @@ synthetic-instruction-tuner/
 - **Reward Model**: OpenAssistant DeBERTa-v3
 
 ### Configuration
+
+**T4 GPU (Free Colab)**
 - **LoRA**: r=8, alpha=16, 4-bit quantization
-- **SFT**: 3 epochs, lr=2e-4, batch_size=4
-- **DPO**: 1 epoch, beta=0.1, lr=5e-5
+- **SFT**: 3 epochs, lr=2e-4, batch=4, grad_acc=4
+- **DPO**: 1 epoch, beta=0.1, lr=5e-5, batch=2, grad_acc=8
+
+**A100 GPU (Colab Pro) - Optimized**
+- **LoRA**: r=8, alpha=16, 4-bit quantization
+- **SFT**: 3 epochs, lr=2e-4, batch=12, grad_acc=2
+- **DPO**: 1 epoch, beta=0.1, lr=5e-5, batch=8, grad_acc=2
 
 ### Data Pipeline
 ```

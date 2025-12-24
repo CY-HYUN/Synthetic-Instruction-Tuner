@@ -8,12 +8,27 @@
 
 ### 1.1 Primary Environment: Google Colab
 
+**Colab Free (T4 GPU)**
 ```
 GPU: NVIDIA T4 (16GB VRAM) - Free
-RAM: 12.7GB (Free) / 25GB (Pro)
+RAM: 12.7GB (Free)
 Storage: Google Drive Integration
-Runtime: Max 12 hours (Free)
+Runtime: Max 12 hours (Limited)
 ```
+
+**Colab Pro (A100 GPU) - Optimized ⚡**
+```
+GPU: NVIDIA A100 (40GB VRAM) - Pro/Pro+
+RAM: 25-52GB
+Storage: Google Drive Integration
+Runtime: Unlimited (Pro+) / 24 hours (Pro)
+```
+
+**This project is optimized for Colab Pro A100:**
+- 3-4x larger batch sizes (SFT: 12, DPO: 8)
+- Optimized checkpoint intervals (100 samples)
+- 2-3x faster overall pipeline
+- Complete dataset generation in single session
 
 ### 1.2 Colab Setup Method
 
