@@ -78,13 +78,23 @@ Thumbs.db
 
 # Project specific
 
-# Model checkpoints (too large for git - use Hugging Face Hub or Google Drive instead)
+# Model checkpoints - Include final models, exclude training checkpoints
 models/sft/*/
 models/dpo/*/
+# But include final trained models (LoRA/DPO adapters ~50MB each)
+!models/sft/final/
+!models/dpo/final/
+
+# Exclude large model files globally (except in whitelisted directories above)
 *.bin
 *.safetensors
 *.pt
 *.pth
+# Re-include these in final directories
+!models/sft/final/*.bin
+!models/sft/final/*.safetensors
+!models/dpo/final/*.bin
+!models/dpo/final/*.safetensors
 
 # Generated data - Final datasets are included in git for reproducibility
 # Only ignore temporary checkpoint files

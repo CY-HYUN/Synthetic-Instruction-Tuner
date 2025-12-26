@@ -570,6 +570,8 @@ From `evaluation/results/agent_evaluation_results.json`:
    cd synthetic-instruction-tuner
    ```
 
+   **Note**: The repository includes final trained models (~100 MB) in `models/sft/final/` and `models/dpo/final/`. You can use these immediately without running training notebooks.
+
 2. **Configure Hugging Face Token**:
    - Go to [Hugging Face Settings > Tokens](https://huggingface.co/settings/tokens)
    - Create token with `read` permissions
@@ -661,6 +663,44 @@ dpo_config = {
 - BF16 precision (faster than FP16, more stable than FP32)
 - Reduced gradient accumulation (faster updates)
 - Checkpoint interval: 100 samples (balances safety vs speed)
+
+### Using Pretrained Models (Skip Training)
+
+If you cloned the repository, you already have the final trained models and can use them immediately:
+
+**Load SFT Model** (LoRA fine-tuned):
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
+
+# Load base model
+base_model = AutoModelForCausalLM.from_pretrained(
+    "meta-llama/Llama-3.2-3B",
+    load_in_4bit=True,
+    device_map="auto"
+)
+
+# Load LoRA adapter
+model = PeftModel.from_pretrained(base_model, "models/sft/final")
+tokenizer = AutoTokenizer.from_pretrained("models/sft/final")
+
+# Generate text
+prompt = "Write a poem about machine learning in 4 lines."
+inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
+outputs = model.generate(**inputs, max_length=100)
+print(tokenizer.decode(outputs[0]))
+```
+
+**Load DPO Model** (Best performance, includes alignment):
+```python
+# Same as above, but use "models/dpo/final" instead
+model = PeftModel.from_pretrained(base_model, "models/dpo/final")
+tokenizer = AutoTokenizer.from_pretrained("models/dpo/final")
+```
+
+**When to use which model**:
+- **SFT Model** (`models/sft/final/`): General instruction following, good baseline
+- **DPO Model** (`models/dpo/final/`): Best performance (57.5% on benchmarks), preference-aligned
 
 ### Troubleshooting Common Issues
 
@@ -2345,23 +2385,26 @@ This project was completed as part of an academic course on LLM fine-tuning and 
 **Breakdown by Type**:
 - **Code**: 10 Jupyter notebooks (`.ipynb`) + 2 Python modules (`.py`) = 12 files ✅ *Included in Git*
 - **Data**: 3 JSON files (raw, filtered, preference) = 3 files ✅ *Included in Git for reproducibility*
-- **Models**: 3 adapter directories × ~35 files each = 106 files ❌ *Excluded from Git (too large)*
+- **Models**: 2 final model directories (~100 MB) ✅ *Included* + training checkpoints ❌ *Excluded (too large)*
 - **Evaluation**: 7 PNG figures ✅ *Included* + 11 JSON files ❌ *Excluded (regenerable)* = 18 files
 - **Documentation**: 16 Markdown files (`.md`) = 16 files ✅ *Included in Git*
 - **Configuration**: 1 config file (`.json`) + 1 gitignore = 2 files ✅ *Included in Git*
 - **Other**: LICENSE, README, etc. = 114 files (checkpoint fragments ❌ *excluded*, logs ❌ *excluded*)
 
-### Project Size: ~589 MB
+### Project Size: ~589 MB total | ~120 MB in Git
+
+**Total Project Size**: ~589 MB (all files including excluded checkpoints)
+**Git Repository Size**: ~120 MB (code, data, final models, docs, figures)
 
 **Breakdown by Directory**:
 ```
-models/          566 MB   (96.1%)   # LoRA/PT/DPO adapters, tokenizers
-data/             19 MB   ( 3.2%)   # Raw, filtered, preference data
-notebooks/       2.2 MB   ( 0.4%)   # 10 Jupyter notebooks with outputs
-docs/            812 KB   ( 0.1%)   # 16 markdown documentation files
-evaluation/      565 KB   (<0.1%)   # Figures, metrics, results
-src/              34 KB   (<0.1%)   # Python modules (QualityFilter)
-config/            2 KB   (<0.1%)   # config.json
+models/          566 MB   (96.1%)   # 2 final models ✅ included (~100 MB), checkpoints ❌ excluded (~466 MB)
+data/             19 MB   ( 3.2%)   # ✅ Final datasets included, checkpoints excluded
+notebooks/       2.2 MB   ( 0.4%)   # ✅ All 10 Jupyter notebooks included
+docs/            812 KB   ( 0.1%)   # ✅ 16 markdown documentation files included
+evaluation/      565 KB   (<0.1%)   # ✅ 7 PNG figures included, JSON results excluded
+src/              34 KB   (<0.1%)   # ✅ Python modules (QualityFilter) included
+config/            2 KB   (<0.1%)   # ✅ config.json included
 ```
 
 ### Code: 10 Notebooks + 2 Python Modules
@@ -2403,27 +2446,32 @@ config/            2 KB   (<0.1%)   # config.json
 - `data/raw/checkpoint_*.json` (15 files × ~800 KB = 12 MB total) - Intermediate generation checkpoints
 - Excluded via `.gitignore` to keep repository clean
 
-### Models: 3 Variants, 106 Files (566 MB) ❌ *Excluded from Git*
+### Models: 2 Final Models (~100 MB) ✅ *Included in Git*
 
-**Why excluded**: Model files are too large for GitHub (50MB+ per adapter). Use Hugging Face Hub or Google Drive instead.
+**Final trained models are included** in the repository for immediate use. Training checkpoints are excluded.
 
-**LoRA Adapter** (50 MB):
-- `models/lora_adapter/adapter_model.safetensors` (48 MB)
-- `models/lora_adapter/adapter_config.json` (1 KB)
-- Tokenizer files: 5 files (2 MB)
+**SFT Model** (LoRA, 64 MB) ✅ *Included*:
+- Location: `models/sft/final/`
+- `adapter_model.safetensors` (47 MB)
+- `adapter_config.json` (1 KB)
+- Tokenizer files: `tokenizer.json` (17 MB), config files
+- Training metadata: `training_args.bin`, `training_config.json`
+- Use with: Load as PEFT adapter on Llama-3.2-3B base
 
-**Prompt Tuning Adapter** (1 MB):
-- `models/prompt_tuning_adapter/adapter_model.safetensors` (1 MB)
-- `models/prompt_tuning_adapter/adapter_config.json` (1 KB)
-- Tokenizer files: 5 files (2 MB)
+**DPO Model** (LoRA + DPO alignment, 64 MB) ✅ *Included*:
+- Location: `models/dpo/final/`
+- `adapter_model.safetensors` (47 MB)
+- `adapter_config.json` (1 KB)
+- Tokenizer files: `tokenizer.json` (17 MB), config files
+- Training metadata: `training_args.bin`, `training_config.json`
+- Use with: Load as PEFT adapter on Llama-3.2-3B base
 
-**DPO Adapter** (50 MB):
-- `models/dpo_adapter/adapter_model.safetensors` (48 MB)
-- `models/dpo_adapter/adapter_config.json` (1 KB)
-- Tokenizer files: 5 files (2 MB)
+**Prompt Tuning Model** (1 MB) - *Not in final/ structure*:
+- Can be regenerated by running notebook 05b
+- Significantly smaller (61K parameters vs 12M for LoRA)
 
 **Training Checkpoints** ❌ *Excluded from Git (~465 MB)*:
-- Training checkpoints for each method (~155 MB each)
+- Intermediate checkpoints during training (checkpoint-100, checkpoint-200, etc.)
 - Optimizer states, scheduler states
 - Can be regenerated by running notebooks 05, 05b, 06
 
