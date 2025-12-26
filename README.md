@@ -6,8 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Colab](https://img.shields.io/badge/Google-Colab-F9AB00?logo=googlecolab)](https://colab.research.google.com/)
 [![Status](https://img.shields.io/badge/Status-Completed-success.svg)](https://github.com)
-[![Cost](https://img.shields.io/badge/Cost-$0--$0.40-green.svg)](https://github.com)
-[![Timeline](https://img.shields.io/badge/Timeline-4_days-blue.svg)](https://github.com)
+[![Cost](https://img.shields.io/badge/Cost-~200_Compute_Units-green.svg)](https://github.com)
+[![Timeline](https://img.shields.io/badge/Timeline-7_days_total-blue.svg)](https://github.com)
 [![Model](https://img.shields.io/badge/Model-Llama--3.2--3B-orange.svg)](https://huggingface.co/meta-llama/Llama-3.2-3B)
 [![Method](https://img.shields.io/badge/Method-LoRA+DPO-purple.svg)](https://github.com)
 [![Performance](https://img.shields.io/badge/Performance-57.5%25-brightgreen.svg)](https://github.com)
@@ -16,34 +16,34 @@
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Highlights & Key Results](#highlights--key-results)
-- [Results & Evaluation](#results--evaluation)
-  - [5.1 Benchmark Performance](#51-benchmark-performance)
-  - [5.2 Training Curves & Convergence](#52-training-curves--convergence)
-  - [5.3 Efficiency Comparison](#53-efficiency-comparison)
-  - [5.4 Quality Filtering Analysis](#54-quality-filtering-analysis)
-  - [5.5 Model Response Characteristics](#55-model-response-characteristics)
-  - [5.6 Performance vs Resource Trade-offs](#56-performance-vs-resource-trade-offs)
-  - [5.7 Instruction Following & Knowledge](#57-instruction-following--knowledge)
-  - [5.8 Agent Capabilities](#58-agent-capabilities)
-- [Quick Start & Installation](#quick-start--installation)
-- [Project Architecture](#project-architecture)
-- [Technical Implementation](#technical-implementation)
-- [Cost & Resource Optimization](#cost--resource-optimization)
-- [When to Use Each Method](#when-to-use-each-method)
-- [Reproducibility Guide](#reproducibility-guide)
-- [Lessons Learned](#lessons-learned)
-- [Future Work & Extensions](#future-work--extensions)
-- [Learning Outcomes](#learning-outcomes)
-- [Project Statistics & Deliverables](#project-statistics--deliverables)
-- [Documentation & Resources](#documentation--resources)
-- [Citation & Acknowledgments](#citation--acknowledgments)
-- [License](#license)
+- [1. Project Overview](#1-project-overview)
+- [2. Highlights & Key Results](#2-highlights--key-results)
+- [3. Results & Evaluation](#3-results--evaluation)
+  - [3.1 Benchmark Performance](#31-benchmark-performance)
+  - [3.2 Training Curves & Convergence](#32-training-curves--convergence)
+  - [3.3 Efficiency Comparison](#33-efficiency-comparison)
+  - [3.4 Quality Filtering Analysis](#34-quality-filtering-analysis)
+  - [3.5 Model Response Characteristics](#35-model-response-characteristics)
+  - [3.6 Performance vs Resource Trade-offs](#36-performance-vs-resource-trade-offs)
+  - [3.7 Instruction Following & Knowledge](#37-instruction-following--knowledge)
+  - [3.8 Agent Capabilities](#38-agent-capabilities)
+- [4. Quick Start & Installation](#4-quick-start--installation)
+- [5. Project Architecture](#5-project-architecture)
+- [6. Technical Implementation](#6-technical-implementation)
+- [7. Cost & Resource Optimization](#7-cost--resource-optimization)
+- [8. When to Use Each Method](#8-when-to-use-each-method)
+- [9. Reproducibility Guide](#9-reproducibility-guide)
+- [10. Lessons Learned](#10-lessons-learned)
+- [11. Future Work & Extensions](#11-future-work--extensions)
+- [12. Learning Outcomes](#12-learning-outcomes)
+- [13. Project Statistics & Deliverables](#13-project-statistics--deliverables)
+- [14. Documentation & Resources](#14-documentation--resources)
+- [15. Citation & Acknowledgments](#15-citation--acknowledgments)
+- [16. License](#16-license)
 
 ---
 
-## Project Overview
+## 1. Project Overview
 
 **NLP Task**: Instruction-Following Text Generation for Multi-Domain Dialogue Systems
 
@@ -51,12 +51,12 @@ This project implements a complete end-to-end pipeline for fine-tuning large lan
 
 ### Core Objectives & Achievements
 
-1. **Synthetic Data Generation**: Generate 1,500 high-quality instruction-response pairs using Magpie-style prompting with Llama-3.1-8B-Instruct (4-bit quantized) - entirely free on Google Colab
+1. **Synthetic Data Generation**: Generate 1,500 high-quality instruction-response pairs using Magpie-style prompting with Llama-3.1-8B-Instruct (4-bit quantized) on Google Colab
 2. **Quality Filtering**: Develop and apply a comprehensive 6-filter rule-based system to select 1,000 high-quality samples (83.9% pass rate)
 3. **Preference Learning**: Create 600 preference pairs using reward model scoring for alignment training
 4. **Multi-Method Training**: Compare three fine-tuning approaches - LoRA, Prompt Tuning, and DPO - on identical data
 5. **Comprehensive Evaluation**: Assess models across standard benchmarks (MMLU, HellaSwag, ARC-Easy, TruthfulQA) and specialized agent capabilities
-6. **Cost Efficiency**: Achieve all objectives for 3-4 compute units (~$0.25-$0.40 USD), 96-97% under initial budget
+6. **Cost Efficiency**: Achieve all objectives using ~200 Colab compute units (mixed T4 free tier and A100 Pro tier)
 
 ### Key Features
 
@@ -75,23 +75,23 @@ This project implements a complete end-to-end pipeline for fine-tuning large lan
 | **Pipeline Stages** | 6 (Generation → Filtering → Preference → SFT → DPO → Evaluation) |
 | **Dataset Sizes** | 1,500 raw → 1,000 filtered → 600 preference pairs |
 | **Model Variants** | 4 (Zero-shot, LoRA, Prompt Tuning, DPO) |
-| **Total Cost** | 3-4 compute units (~$0.25-$0.40 USD) |
-| **Training Time** | 4 days actual vs 4 weeks planned (7x faster) |
+| **Total Cost** | ~200 Colab compute units (T4 free + A100 Pro mixed) |
+| **Training Time** | 7 days total (3 days initial setup + 4 days execution) vs 28 days planned (4x faster) |
 | **Best Performance** | 57.5% average across benchmarks (DPO) |
 | **Total Deliverables** | 271 files, ~589 MB |
 | **Notebooks** | 10 (01-09 + 05b optimized variant) |
 
 ### Research Contributions & Innovations
 
-1. **Demonstrated Zero-Cost Viability**: Proved that high-quality instruction tuning is achievable with $0-$0.40 budget on free/Pro Colab tiers
+1. **Demonstrated Cost-Effective Viability**: Proved that high-quality instruction tuning is achievable with ~200 Colab compute units using mixed T4 free tier and A100 Pro tier
 2. **Magpie Validation**: Confirmed Magpie prompting generates diverse, natural instructions without seed data (95% success rate)
 3. **Rule-Based Filtering Effectiveness**: Achieved 83.9% pass rate with interpretable filters, no external API costs
 4. **Method Comparison**: Provided empirical comparison of LoRA vs Prompt Tuning vs DPO on identical data/hardware
-5. **A100 Optimization Strategy**: Documented 2-3x speedup techniques (larger batches, reduced checkpoints) for minimal cost ($0.25)
+5. **A100 Optimization Strategy**: Documented 2-3x speedup techniques (larger batches, reduced checkpoints) for efficient resource utilization
 
 ---
 
-## Highlights & Key Results
+## 2. Highlights & Key Results
 
 ### What Makes This Project Unique
 
@@ -115,33 +115,33 @@ This project implements a complete end-to-end pipeline for fine-tuning large lan
 
 ### Cost Efficiency Metrics
 
-| Pipeline Path | Compute Units | Estimated Cost (USD) | Budget Utilization |
-|---------------|---------------|----------------------|-------------------|
-| **LoRA-only** (Notebooks 01-05, 07-08) | 2.41 units | $0.16 | **2.4%** |
-| **Full Pipeline** (Notebooks 01-09) | 3-4 units | $0.25-$0.40 | **3-4%** |
-| **Initial Budget** | 100 units | $6.50 | 100% |
+| Pipeline Path | Compute Units Used | Infrastructure |
+|---------------|-------------------|----------------|
+| **Full Pipeline** (Notebooks 01-09) | ~200 units | Mixed T4 free tier and A100 Pro tier |
+| **Infrastructure Mix** | T4 (free tier) + A100 (Pro tier) | Strategic GPU selection per workload |
 
-**Efficiency Achievement**: 20x more efficient than initial estimates - spent 2.41 units instead of projected 50+ units through strategic optimizations (4-bit quantization, gradient accumulation, A100 upgrade only when necessary).
+**Resource Utilization Strategy**: Optimized GPU selection by using free T4 tier for less intensive tasks (data generation, filtering) and A100 Pro tier for compute-intensive training (SFT, DPO), achieving efficient resource utilization through strategic workload distribution.
 
 ### Timeline Achievements
 
-| Phase | Planned Duration | Actual Duration | Speedup |
+| Phase | Planned Duration | Actual Duration | Details |
 |-------|------------------|-----------------|---------|
-| Week 1: Data Generation | 7 days | 1 day | 7x |
-| Week 2: Filtering & Preference | 7 days | 1 day | 7x |
-| Week 3: Training (SFT) | 7 days | 1 day | 7x |
-| Week 4: DPO & Evaluation | 7 days | 1 day | 7x |
-| **Total** | **28 days** | **4 days** | **7x** |
+| **Initial Setup** (Late November) | - | 3 days | Environment setup, requirements analysis, planning, tool selection |
+| Week 1: Data Generation | 7 days | 1 day | Magpie-style generation with checkpointing |
+| Week 2: Filtering & Preference | 7 days | 1 day | Quality filtering + preference pair creation |
+| Week 3: Training (SFT) | 7 days | 1 day | LoRA and Prompt Tuning fine-tuning |
+| Week 4: DPO & Evaluation | 7 days | 1 day | DPO alignment + comprehensive evaluation |
+| **Total** | **28 days** | **7 days (3 initial + 4 execution)** | **4x faster than planned** |
 
-**Success Factors**: Parallel processing, A100 optimizations, efficient checkpointing, no major bugs requiring rework.
+**Success Factors**: Thorough initial planning (3 days setup), parallel processing during execution, A100 optimizations, efficient checkpointing, minimal debugging required due to careful preparation.
 
 ---
 
-## Results & Evaluation
+## 3. Results & Evaluation
 
 This section presents comprehensive evaluation results across multiple dimensions: standard benchmarks, training dynamics, efficiency metrics, quality analysis, and agent capabilities.
 
-### 5.1 Benchmark Performance
+### 3.1 Benchmark Performance
 
 ![Benchmark Comparison](evaluation/figures/benchmark_comparison.png)
 
@@ -183,7 +183,7 @@ This section presents comprehensive evaluation results across multiple dimension
 3. LoRA outperforms Prompt Tuning by 3.8 points on average, validating higher parameter budget
 4. All fine-tuned models surpass zero-shot baseline, confirming synthetic data quality
 
-### 5.2 Training Curves & Convergence
+### 3.2 Training Curves & Convergence
 
 #### SFT Training (LoRA & Prompt Tuning)
 
@@ -225,7 +225,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 **Key Insight**: Single-epoch DPO training is sufficient for this dataset size (600 pairs), achieving strong alignment without overfitting. Multi-epoch training risks memorizing specific preferences rather than learning generalizable alignment.
 
-### 5.3 Efficiency Comparison
+### 3.3 Efficiency Comparison
 
 ![Efficiency Comparison](evaluation/figures/efficiency_comparison.png)
 
@@ -270,7 +270,7 @@ This section presents comprehensive evaluation results across multiple dimension
 - **LoRA wins on**: Quality (5.5x better loss), training speed (2.3x faster)
 - **DPO wins on**: Overall balance - best quality, fastest training, lowest memory, fastest inference
 
-### 5.4 Quality Filtering Analysis
+### 3.4 Quality Filtering Analysis
 
 ![Filtering Statistics](evaluation/figures/filtering_stats.png)
 
@@ -308,7 +308,7 @@ This section presents comprehensive evaluation results across multiple dimension
 - **Low toxicity rate** (2%) suggests Llama-3.1-8B-Instruct has strong safety alignment
 - **Rule-based approach effective** - no external API costs, fully interpretable
 
-### 5.5 Model Response Characteristics
+### 3.5 Model Response Characteristics
 
 ![Model Comparison](evaluation/figures/model_comparison.png)
 
@@ -348,7 +348,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 **Interpretation**: Fine-tuning produces models that generate **more information-dense responses** with **richer vocabulary** and **less redundancy**. This aligns with instruction-following objectives where conciseness and informativeness are valued.
 
-### 5.6 Performance vs Resource Trade-offs
+### 3.6 Performance vs Resource Trade-offs
 
 ![Trade-off Analysis](evaluation/figures/tradeoff_analysis.png)
 
@@ -377,7 +377,7 @@ This section presents comprehensive evaluation results across multiple dimension
 - **LoRA**: Second-best on performance, reasonable time/memory
 - **Prompt Tuning**: Not Pareto-optimal (worse performance for similar/more resources)
 
-### 5.7 Instruction Following & Knowledge
+### 3.7 Instruction Following & Knowledge
 
 #### Instruction Following Examples
 
@@ -435,7 +435,7 @@ From `evaluation/results/knowledge_test_results.json`:
 
 **Key Finding**: Fine-tuning **preserves factual knowledge** while improving presentation naturalness. DPO responses are most informative while maintaining accuracy.
 
-### 5.8 Agent Capabilities
+### 3.8 Agent Capabilities
 
 From `evaluation/results/agent_evaluation_results.json`:
 
@@ -545,7 +545,7 @@ From `evaluation/results/agent_evaluation_results.json`:
 
 ---
 
-## Quick Start & Installation
+## 4. Quick Start & Installation
 
 ### Prerequisites
 
@@ -555,7 +555,7 @@ From `evaluation/results/agent_evaluation_results.json`:
 - HF_TOKEN environment variable (Hugging Face API token)
 
 **Optional**:
-- Colab Pro subscription ($10/month) for A100 GPU access (2-3x faster, ~$0.25 total cost)
+- Colab Pro subscription ($10/month) for A100 GPU access (2-3x faster training)
 - GitHub account for cloning repository
 
 **Computational Resources**:
@@ -608,9 +608,9 @@ Run notebooks **in order** - each depends on outputs from previous steps:
 | **08** | `08_agent_evaluation.ipynb` | Test instruction following, knowledge, agent capabilities | 2-3 hrs | 1-2 hrs | 0.22 | Yes (A100) |
 | **09** | `09_results_visualization.ipynb` | Generate all figures and comparison reports | 1 hr | 1 hr | 0.15 | Yes (A100) |
 
-**Total Compute Costs**:
-- **LoRA Path** (01-05, 07-09): ~2.41 units (~$0.16 USD)
-- **Full Pipeline** (01-09 including DPO): ~3-4 units (~$0.25-$0.40 USD)
+**Total Compute Requirements**:
+- **Full Pipeline** (01-09 including DPO): ~200 Colab compute units
+- **Infrastructure**: Mixed T4 free tier (~40-50 units) + A100 Pro tier (~150-160 units)
 
 ### Configuration Options
 
@@ -681,7 +681,7 @@ dpo_config = {
 
 **Issue 4: Slow Data Generation (Notebook 02)**
 - **Expected**: 16-17 hours on T4 for 1,500 samples
-- **Optimization**: Upgrade to A100 for 6-8 hour runtime (~$0.15 cost)
+- **Optimization**: Upgrade to A100 for 6-8 hour runtime (uses compute units but 2-3x faster)
 - **Alternative**: Reduce `num_samples` to 1,000 in config.json (proportionally faster)
 
 **Issue 5: SFTTrainer Incompatibility with Prompt Tuning**
@@ -696,7 +696,7 @@ dpo_config = {
 
 ---
 
-## Project Architecture
+## 5. Project Architecture
 
 ### Directory Structure
 
@@ -935,7 +935,7 @@ D:\Study\Github\TSP\LLM\Synthetic-Instruction-Tuner\
 
 ---
 
-## Technical Implementation
+## 6. Technical Implementation
 
 ### Models & Frameworks
 
@@ -1336,56 +1336,40 @@ loss = -log(sigmoid(beta * (log_p_chosen - log_p_rejected)
 
 ---
 
-## Cost & Resource Optimization
+## 7. Cost & Resource Optimization
 
-### Detailed Cost Breakdown by Notebook
+### Resource Utilization Overview
 
-| Notebook | T4 Hours | A100 Hours | Compute Units (A100) | Est. Cost (USD) | Optimization Applied |
-|----------|----------|------------|----------------------|-----------------|----------------------|
-| 01 | 0.17 | 0.17 | 0.00 | $0.00 | CPU-only |
-| 02 | 16.5 | 7.0 | 1.20 | $0.08 | 4-bit quantization, checkpoints |
-| 03 | 0.5 | 0.5 | 0.00 | $0.00 | CPU-only, no GPU needed |
-| 04 | 5.0 | 2.5 | 0.45 | $0.03 | Sequential processing |
-| 05 | 8.0 | 3.0 | 0.52 | $0.03 | Large batches, BF16, LoRA |
-| 05b | 10.0 | 4.0 | 0.60 | $0.04 | Prompt Tuning alternative |
-| 06 | 5.0 | 1.5 | 0.24 | $0.02 | Single epoch, shared weights |
-| 07 | 3.5 | 2.5 | 0.38 | $0.02 | Batched inference |
-| 08 | 2.5 | 1.5 | 0.22 | $0.01 | Efficient evaluation |
-| 09 | 1.0 | 1.0 | 0.15 | $0.01 | Matplotlib (CPU) |
-| **Total (LoRA path)** | **42.2** | **18.7** | **2.41** | **$0.16** | |
-| **Total (Full pipeline)** | **52.2** | **21.2** | **3.76** | **$0.24** | |
+**Total Compute Units Used**: ~200 Colab compute units
 
-**Cost Calculation**:
-- **Compute Units**: A100 GPU hours (Colab Pro pricing)
-- **Unit Cost**: ~$0.065 per unit (approximate)
-- **Budget Allocated**: 100 units
-- **Budget Used**: 2.41-3.76 units (2.4-3.8%)
-- **Savings**: 96-97% under budget
+**Infrastructure Strategy**:
+- **T4 GPU (Free Tier)**: Used for lighter workloads (data generation, filtering, some initial experiments)
+- **A100 GPU (Pro Tier)**: Used for compute-intensive training (SFT, DPO) and evaluation
+- **Mixed Approach**: Strategic GPU selection based on workload requirements
 
-### Total Costs Comparison
+| Workload Type | GPU Type | Rationale |
+|---------------|----------|-----------|
+| Data Generation (Notebook 02) | T4 free + A100 | Large-scale generation benefits from A100 |
+| Quality Filtering (Notebook 03) | T4 free | CPU-intensive, no GPU bottleneck |
+| Preference Generation (Notebook 04) | A100 | Reward model inference requires GPU memory |
+| SFT Training (Notebooks 05, 05b) | A100 | Training benefits from A100 speed/memory |
+| DPO Training (Notebook 06) | A100 | Two models simultaneously, high memory |
+| Evaluation (Notebooks 07-09) | Mixed T4/A100 | Benchmarks on A100, plotting on T4 |
 
-| Pipeline Path | Notebooks | Compute Units | Cost (USD) | vs Initial Estimate |
-|---------------|-----------|---------------|------------|---------------------|
-| **LoRA-only** | 01-05, 07-09 | 2.41 | $0.16 | **20x more efficient** |
-| **Full Pipeline** | 01-09 (including DPO) | 3.76 | $0.24 | **26x more efficient** |
-| **Initial Estimate** | - | 50+ | $3.25+ | Baseline |
-| **Budget Allocated** | - | 100 | $6.50 | Available |
-
-**Efficiency Achievements**:
-- **Spent 2.41 units** instead of projected 50+ units
-- **96-97% savings** through strategic optimizations
-- **Total cost**: $0.16-$0.24 USD (less than a coffee)
-
-### Budget Comparison
-
+**Resource Allocation Breakdown**:
 ```
-Initial Budget:        100 units ████████████████████████████████████████
-Initial Estimate:       50 units ████████████████████
-Actual LoRA Path:      2.41 units █
-Actual Full Pipeline:  3.76 units ██
+Total Compute Units: ~200
+├─ T4 Free Tier:     ~40-50 units (lighter tasks, experimentation)
+├─ A100 Pro Tier:    ~150-160 units (training, evaluation)
+└─ Optimizations:    4-bit quantization, gradient accumulation, checkpointing
 ```
 
-**20-26x More Efficient than Initial Estimates**
+**Key Efficiency Strategies**:
+1. **Strategic GPU Selection**: Use free T4 for non-bottleneck tasks
+2. **A100 for Training**: 2-3x speedup on compute-intensive workloads
+3. **Checkpoint Recovery**: Survive 12-hour Colab disconnections
+4. **4-bit Quantization**: Reduce memory footprint by ~75%
+5. **Batch Size Optimization**: Maximize GPU utilization without OOM
 
 ### Memory Optimization Techniques
 
@@ -1488,7 +1472,7 @@ if checkpoints:
 
 ---
 
-## When to Use Each Method
+## 8. When to Use Each Method
 
 Choosing between LoRA, Prompt Tuning, and DPO depends on your specific constraints and priorities. This section provides practical guidance based on our empirical results.
 
@@ -1628,15 +1612,15 @@ START: What is your primary constraint?
 - **LoRA/Prompt Tuning**: 1,000+ instruction-response pairs
 - **DPO**: 600+ preference pairs (chosen/rejected) + SFT checkpoint
 
-**Budget Considerations** (for this pipeline):
-- LoRA-only: 2.41 compute units (~$0.16)
-- DPO (includes LoRA): +1.35 units (~$0.24 total)
-- Prompt Tuning: +0.60 units (~$0.20 total)
-- **All three**: ~3.76 units (~$0.24) - DPO dominates cost
+**Resource Considerations** (for this pipeline):
+- Total pipeline: ~200 Colab compute units (mixed T4 free tier and A100 Pro tier)
+- SFT Training: Majority of compute on A100 for speed
+- DPO Training: Requires A100 for dual-model setup
+- Evaluation: Can use mixed T4/A100 based on availability
 
 ---
 
-## Reproducibility Guide
+## 9. Reproducibility Guide
 
 This project is designed for full reproducibility. Follow these guidelines to replicate our exact results.
 
@@ -1874,7 +1858,7 @@ num_epochs = config["sft_epochs"]
 
 ---
 
-## Lessons Learned
+## 10. Lessons Learned
 
 This section documents key insights from the project - what worked well, what challenges we faced, and how we solved them.
 
@@ -1896,15 +1880,15 @@ This section documents key insights from the project - what worked well, what ch
 - **Most Valuable Filter**: Repetition detection (caught 64% of failures)
 - **Future Improvement**: Could add learned quality model for borderline cases
 
-**3. A100 Optimizations (2-3x Speedup for $0.25)**:
-- **Key Insight**: Upgrading to A100 for compute-heavy notebooks pays for itself in time savings
-- **Costs**: ~$0.25 total for A100 GPU time (vs $0 for T4)
-- **Savings**: 20+ hours of waiting (42 hrs T4 → 19 hrs A100)
+**3. A100 Optimizations (2-3x Speedup with Compute Units)**:
+- **Key Insight**: Upgrading to A100 for compute-heavy notebooks provides significant time savings
+- **Resource Strategy**: Mixed T4 free tier (~40-50 units) + A100 Pro tier (~150-160 units)
+- **Time Savings**: 20+ hours of waiting (42 hrs T4 → 19 hrs A100)
 - **Techniques**:
   - Larger batch sizes (3-4x)
   - BF16 precision (faster + more stable than FP16)
   - Reduced checkpoint frequency (less I/O overhead)
-- **Recommendation**: Use T4 for notebooks 01, 03 (CPU-only), A100 for rest
+- **Recommendation**: Use T4 for notebooks 01, 03 (CPU-only), A100 for compute-intensive training
 
 **4. Checkpoint System (Survives 12h Colab Limits)**:
 - **Key Insight**: Frequent checkpoints essential for long-running free tier notebooks
@@ -1931,13 +1915,13 @@ This section documents key insights from the project - what worked well, what ch
 **Attempted Solutions**:
 1. ❌ Lower learning rate (2e-4 → 1e-4): Too slow convergence
 2. ❌ Gradient clipping (0.5): Still occasional NaNs
-3. ✅ **Upgrade to A100 ($0.25 investment)**
+3. ✅ **Upgrade to A100 with BF16 support**
 
 **Final Solution**:
 - Use A100 for training notebooks (05, 06)
 - BF16 has wider range (same as FP32) → stable training
 - Side benefit: 2-3x faster training (larger batches)
-- **Cost**: $0.25 total (worth it for stability + speed)
+- **Resource Investment**: Uses A100 compute units but provides stability and speed
 
 **Challenge 2: SFTTrainer + Prompt Tuning Incompatibility**
 
@@ -2082,11 +2066,11 @@ if os.path.exists("data/raw/checkpoint_*.json"):
 - **Interpretation**: 256 low-quality samples actively hurt performance
 - **Lesson**: Always filter synthetic data aggressively
 
-**3. A100 Investment Justified (2-3x Speedup for $0.25)**:
-- **Cost**: $0.25 for 3-4 compute units (vs $0 for T4)
-- **Savings**: 20+ hours of waiting (42h → 19h)
-- **Value**: $0.25 to save 20 hours = **$0.0125/hour** (absurdly cheap)
-- **Recommendation**: Use A100 for any training >2 hours
+**3. A100 Investment Justified (2-3x Speedup with Compute Units)**:
+- **Resource Trade-off**: Uses A100 compute units but provides 2-3x speedup
+- **Time Savings**: 20+ hours of waiting (42h T4 → 19h A100)
+- **Value Proposition**: Significant time savings justify compute unit usage
+- **Recommendation**: Use A100 for compute-intensive training (SFT, DPO, evaluation)
 
 **4. Sequential Preference Generation More Reliable Than Parallel**:
 - **Parallel Attempt** (Notebook 04 v1):
@@ -2099,7 +2083,7 @@ if os.path.exists("data/raw/checkpoint_*.json"):
 
 ---
 
-## Future Work & Extensions
+## 11. Future Work & Extensions
 
 ### Scale to Larger Datasets (50K+ Samples)
 
@@ -2128,7 +2112,7 @@ if os.path.exists("data/raw/checkpoint_*.json"):
 **Challenges**:
 1. **Memory**: 7B requires ~28 GB (vs 12 GB for 3B) → Need A100 40GB minimum
 2. **Training Time**: ~3x slower than 3B (more layers)
-3. **Cost**: ~$1-2 for full pipeline (vs $0.25 for 3B)
+3. **Compute Units**: Will require more compute units due to larger model and longer training
 
 **Solutions**:
 - **Deeper Quantization**: 3-bit or 2-bit (vs 4-bit)
@@ -2247,7 +2231,7 @@ User Interactions → Logging → Preference Labeling → DPO Retraining → Mod
 
 ---
 
-## Learning Outcomes
+## 12. Learning Outcomes
 
 This project was completed as part of an academic course on LLM fine-tuning and synthetic data generation. Key learning outcomes:
 
@@ -2308,7 +2292,7 @@ This project was completed as part of an academic course on LLM fine-tuning and 
 
 ### Research Contributions
 
-1. **Zero-Cost Validation**: Demonstrated that high-quality instruction tuning is achievable with $0-$0.40 budget on free/Pro Colab tiers
+1. **Cost-Effective LLM Fine-Tuning**: Demonstrated that high-quality instruction tuning is achievable using ~200 Colab compute units with strategic GPU selection (mixed T4 free tier and A100 Pro tier)
 
 2. **Magpie Effectiveness**: Confirmed Magpie prompting generates diverse, natural instructions without seed data (95% success rate, 83.9% pass rate after filtering)
 
@@ -2350,7 +2334,7 @@ This project was completed as part of an academic course on LLM fine-tuning and 
 
 ---
 
-## Project Statistics & Deliverables
+## 13. Project Statistics & Deliverables
 
 ### Total Files: 271
 
@@ -2511,7 +2495,7 @@ config/            2 KB   (<0.1%)   # config.json
 - ✅ Comprehensive reproducibility guide
 - ✅ Lessons learned documentation
 
-### Timeline: 4 Days Actual vs 4 Weeks Planned
+### Timeline: 7 Days Actual vs 28 Days Planned
 
 **Planned Schedule** (PROJECT_PLAN.md):
 - Week 1 (7 days): Data generation + filtering
@@ -2521,23 +2505,29 @@ config/            2 KB   (<0.1%)   # config.json
 - **Total**: 28 days
 
 **Actual Timeline**:
-- Day 1: Notebooks 01-03 (setup, generation, filtering)
-- Day 2: Notebooks 04-05 (preference, SFT)
-- Day 3: Notebooks 06-08 (DPO, evaluation)
-- Day 4: Notebook 09 + documentation
-- **Total**: 4 days
+- **Initial Setup Phase** (Late November, 3 days):
+  - Day 1: Environment setup, Colab configuration, repository initialization
+  - Day 2: Requirements analysis, project planning, literature review
+  - Day 3: Tool selection, config.json creation, notebook templates
+- **Execution Phase** (4 days):
+  - Day 1: Notebooks 01-03 (setup, generation, filtering)
+  - Day 2: Notebooks 04-05 (preference, SFT)
+  - Day 3: Notebooks 06-08 (DPO, evaluation)
+  - Day 4: Notebook 09 + documentation
+- **Total**: 7 days (3 initial + 4 execution)
 
-**Speedup Factors**:
+**Success Factors**:
+- Thorough initial planning (3 days) reduced execution debugging
 - A100 optimizations (2-3x faster training)
 - Parallel processing where possible
-- No major bugs requiring rework
 - Efficient checkpoint system (no lost work)
+- Minimal bugs due to careful preparation
 
-**7x Faster Than Planned**
+**4x Faster Than Planned (7 days vs 28 days)**
 
 ---
 
-## Documentation & Resources
+## 14. Documentation & Resources
 
 ### Project Documentation
 
@@ -2646,7 +2636,7 @@ All detailed documentation is available in the `docs/` directory:
 
 ---
 
-## Citation & Acknowledgments
+## 15. Citation & Acknowledgments
 
 ### How to Cite This Project
 
@@ -2707,7 +2697,7 @@ If you use this code, methodology, or findings in your research, please cite:
 
 ---
 
-## License
+## 16. License
 
 MIT License
 
@@ -2739,5 +2729,5 @@ SOFTWARE.
 
 *Last Updated: 2024-12-26*
 *Project Status: ✅ Completed*
-*Total Cost: $0.16-$0.40 USD*
-*Total Time: 4 days*
+*Total Compute Units: ~200 Colab units (T4 free + A100 Pro mixed)*
+*Total Time: 7 days (3 days initial setup + 4 days execution)*
