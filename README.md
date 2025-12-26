@@ -143,7 +143,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 ### 3.1 Benchmark Performance
 
-![Benchmark Comparison](evaluation/figures/benchmark_comparison.png)
+![Benchmark Comparison](./evaluation/figures/benchmark_comparison.png)
 
 *Figure 1: Performance across four standard benchmarks (MMLU, HellaSwag, ARC-Easy, TruthfulQA). Left panel shows per-benchmark breakdown, right panel shows average performance. DPO achieves 57.5% average, outperforming LoRA (54.7%), Prompt Tuning (50.9%), and zero-shot baseline (47.8%).*
 
@@ -187,7 +187,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 #### SFT Training (LoRA & Prompt Tuning)
 
-![SFT Training Curves](evaluation/figures/sft_training_curves.png)
+![SFT Training Curves](./evaluation/figures/sft_training_curves.png)
 
 *Figure 2: Supervised fine-tuning loss curves over 3 epochs. Training loss drops from 1.14 to 0.56 (51% reduction), eval loss stabilizes at 0.54 with no overfitting. Consistent convergence pattern validates hyperparameter choices.*
 
@@ -206,7 +206,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 #### DPO Training (Preference Alignment)
 
-![DPO Training Curves](evaluation/figures/dpo_training_curves.png)
+![DPO Training Curves](./evaluation/figures/dpo_training_curves.png)
 
 *Figure 3: Direct Preference Optimization training curves over 1 epoch. Training loss improves from 0.695 to 0.625, eval loss remains stable at 0.54-0.58. Single-epoch design prevents overfitting while achieving strong alignment.*
 
@@ -227,7 +227,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 ### 3.3 Efficiency Comparison
 
-![Efficiency Comparison](evaluation/figures/efficiency_comparison.png)
+![Efficiency Comparison](./evaluation/figures/efficiency_comparison.png)
 
 *Figure 4: Comprehensive efficiency metrics across six dimensions. Prompt Tuning uses 197x fewer parameters than LoRA (61K vs 12.16M) and produces 50x smaller models, but LoRA achieves 5.5x better eval loss (0.54 vs 2.96). DPO demonstrates optimal trade-off: lowest memory (4.7GB), fastest inference (8.73 tok/s), best eval loss (0.54).*
 
@@ -272,7 +272,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 ### 3.4 Quality Filtering Analysis
 
-![Filtering Statistics](evaluation/figures/filtering_stats.png)
+![Filtering Statistics](./evaluation/figures/filtering_stats.png)
 
 *Figure 5: Quality filtering distribution and failure analysis. Out of 1,500 raw samples, 1,256 passed all filters (83.9% pass rate) with mean quality score 0.88. Failure reasons: 64% repeated phrases, 31% too short, 3% language issues, 2% toxic content.*
 
@@ -310,7 +310,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 ### 3.5 Model Response Characteristics
 
-![Model Comparison](evaluation/figures/model_comparison.png)
+![Model Comparison](./evaluation/figures/model_comparison.png)
 
 *Figure 6: Response characteristic comparison across Base, SFT, and DPO models. Fine-tuned models generate longer responses (+20% avg length), use 67% more unique vocabulary, but produce 36% fewer sentences (denser, more information-rich responses).*
 
@@ -350,7 +350,7 @@ This section presents comprehensive evaluation results across multiple dimension
 
 ### 3.6 Performance vs Resource Trade-offs
 
-![Trade-off Analysis](evaluation/figures/tradeoff_analysis.png)
+![Trade-off Analysis](./evaluation/figures/tradeoff_analysis.png)
 
 *Figure 7: Performance vs resource trade-offs across methods. Left panel: Performance vs training time - DPO achieves best results (57.5%) in shortest time (0.04h). Right panel: Performance vs memory - DPO optimal at 57.5% with only 4.7GB peak memory.*
 
