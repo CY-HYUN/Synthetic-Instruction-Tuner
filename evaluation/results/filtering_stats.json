@@ -1,0 +1,19 @@
+{
+  "total": 1500,
+  "passed": 1258,
+  "failed": 242,
+  "pass_rate": 0.8386666666666667,
+  "reasons": {
+    "Repeated phrases detected": 156,
+    "Response too short": 76,
+    "Potentially harmful content detected": 5,
+    "Response is a refusal": 5
+  },
+  "score_stats": {
+    "mean": 0.8815939552866354,
+    "std": 0.06518261663055806,
+    "min": 0.6561906862745098,
+    "max": 0.9904000000000001,
+    "median": 0.9013257575757576
+  }
+}
