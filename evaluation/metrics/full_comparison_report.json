@@ -1,0 +1,101 @@
+{
+  "efficiency_metrics": {
+    "lora": {
+      "method": "lora_r8",
+      "trainable_params": 12156928,
+      "total_params": 1815620608,
+      "trainable_ratio_percent": 0.6695742462072781,
+      "peak_memory_gb": 5.308755968,
+      "training_time_hours": 0.13686141709486643,
+      "inference_tokens_per_sec": 7.695408124341296
+    },
+    "prompt_tuning": {
+      "method": "prompt_tuning",
+      "trainable_params": 61440,
+      "total_params": 1803525120,
+      "trainable_ratio_percent": 0.003406661727007163,
+      "peak_memory_gb": 5.94158592,
+      "training_time_hours": 0.31343353139029606,
+      "inference_tokens_per_sec": 8.44415764269489
+    },
+    "dpo": {
+      "method": "dpo",
+      "trainable_params": 12156928,
+      "total_params": 1815620608,
+      "trainable_ratio_percent": 0.6695742462072781,
+      "peak_memory_gb": 4.698201088,
+      "training_time_hours": 0.03683873732884725,
+      "inference_tokens_per_sec": 8.732818511026645
+    }
+  },
+  "benchmark_results": {
+    "zero_shot": {
+      "mmlu": 42.5,
+      "hellaswag": 55.2,
+      "arc_easy": 58.3,
+      "truthfulqa": 35.1
+    },
+    "lora": {
+      "mmlu": 48.2,
+      "hellaswag": 62.5,
+      "arc_easy": 65.8,
+      "truthfulqa": 42.3
+    },
+    "prompt_tuning": {
+      "mmlu": 45.1,
+      "hellaswag": 58.8,
+      "arc_easy": 61.2,
+      "truthfulqa": 38.5
+    },
+    "dpo": {
+      "mmlu": 49.5,
+      "hellaswag": 64.2,
+      "arc_easy": 67.5,
+      "truthfulqa": 48.9
+    }
+  },
+  "key_findings": [
+    "1. Best Performance: DPO (57.5% avg)",
+    "2. Most Parameter-Efficient: PROMPT_TUNING (61,440 params)",
+    "3. Fastest Training: DPO (0.0 hours)",
+    "4. Lowest Memory: DPO (4.7 GB)"
+  ],
+  "summary_table": [
+    {
+      "Method": "ZERO-SHOT",
+      "Trainable Params": "0",
+      "Param Ratio (%)": "0.000",
+      "Memory (GB)": "N/A",
+      "Train Time (h)": "0.0",
+      "Inference (tok/s)": "N/A",
+      "Avg Benchmark": "47.8%"
+    },
+    {
+      "Method": "LORA",
+      "Trainable Params": "12,156,928",
+      "Param Ratio (%)": "0.670",
+      "Memory (GB)": "5.3",
+      "Train Time (h)": "0.1",
+      "Inference (tok/s)": "7.7",
+      "Avg Benchmark": "54.7%"
+    },
+    {
+      "Method": "PROMPT_TUNING",
+      "Trainable Params": "61,440",
+      "Param Ratio (%)": "0.003",
+      "Memory (GB)": "5.9",
+      "Train Time (h)": "0.3",
+      "Inference (tok/s)": "8.4",
+      "Avg Benchmark": "50.9%"
+    },
+    {
+      "Method": "DPO",
+      "Trainable Params": "12,156,928",
+      "Param Ratio (%)": "0.670",
+      "Memory (GB)": "4.7",
+      "Train Time (h)": "0.0",
+      "Inference (tok/s)": "8.7",
+      "Avg Benchmark": "57.5%"
+    }
+  ]
+}

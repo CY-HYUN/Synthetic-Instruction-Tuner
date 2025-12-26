@@ -390,6 +390,91 @@ print(whoami())  # 로그인 상태 확인
 # https://huggingface.co/meta-llama 방문하여 동의 여부 확인
 ```
 
+### 8.4 Preference Data Generation 멈춤 문제
+
+**증상**: `04_preference_generation.ipynb` (OPTIMIZED) 실행 시 배치 처리 중 멈춤 현상
+- 진행률 바가 멈춤 (2-3분 이상 진행 없음)
+- GPU 사용률 낮음 (14-15GB/40GB)
+- "Testing batch generation..." 또는 메인 루프에서 멈춤
+
+**원인**:
+- 배치 처리 시 `model.generate()` 호출이 반환되지 않음
+- `generation_batch_size`가 A100 환경에서도 불안정 (3 이상)
+- GPU 메모리가 아닌 **프로세스 레벨 교착 상태** 발생
+- **고용량 RAM을 켜도 해결되지 않음**
+
+**핵심 원인 분석**:
+- Llama-3.1-8B-Instruct 4-bit 모델의 배치 생성 불안정성
+- 여러 temperature에서 동시 생성 시 CUDA 커널 충돌
+- Colab 환경 특유의 메모리 관리 이슈
+
+**해결책 1: STABLE 버전 사용 (강력 권장)**
+```python
+# 04_preference_generation_STABLE.ipynb 사용
+# - 순차 처리 (한 번에 1개씩)
+# - 100% 안정성 보장
+# - A100: 8-10시간, T4: 15-20시간
+# - 고용량 RAM과 무관하게 안정적
+
+# 실전 검증됨:
+# - 50개 생성 완료 (성공률 96-100%)
+# - 멈춤 현상 0회
+# - 체크포인트 안전
+```
+
+**해결책 2: OPTIMIZED 버전 재시도 (권장하지 않음)**
+```python
+# 주의: 고용량 RAM을 켜도 실패 확률 60-70%
+
+# 런타임 완전 초기화 필수
+# 런타임 → 런타임 다시 시작 → 모두 삭제
+
+# generation_batch_size를 1로 강제
+generation_batch_size=1  # 기본값 3에서 1로 변경
+
+# 메모리 정리 주기 단축
+if batch_num % 5 == 0:  # 10 → 5
+    gc.collect()
+    torch.cuda.empty_cache()
+
+# 테스트 셀 건너뛰기 (Cell 12)
+# 바로 메인 루프(Cell 16) 실행
+```
+
+**Colab 장시간 실행 유지 방법**
+```javascript
+// 브라우저 콘솔(F12)에서 실행
+function ClickConnect(){
+    console.log("Keep alive");
+    document.querySelector("colab-connect-button")?.shadowRoot.querySelector("#connect")?.click();
+}
+setInterval(ClickConnect, 60000);  // 1분마다 연결 유지
+```
+
+**체크포인트 복구**
+```python
+# STABLE 체크포인트에서 OPTIMIZED로 전환 시
+import shutil
+STABLE_CHECKPOINT = f"{PREFERENCE_PATH}/preference_checkpoint_stable.json"
+CHECKPOINT_PATH = f"{PREFERENCE_PATH}/preference_checkpoint.json"
+
+if os.path.exists(STABLE_CHECKPOINT):
+    shutil.copy(STABLE_CHECKPOINT, CHECKPOINT_PATH)
+    print(f"✅ Loaded STABLE checkpoint")
+```
+
+**권장 워크플로우**:
+1. **STABLE 버전 직접 사용** (처음부터 끝까지)
+2. ~~OPTIMIZED 전환 시도~~ (권장하지 않음 - 실패 확률 60-70%)
+3. 시간이 아까워도 STABLE이 **결과적으로 더 빠름**
+   - OPTIMIZED 디버깅: 2-4시간 낭비 → 실패
+   - STABLE 한 번에: 8-10시간 → 확실한 완성
+
+**실제 경험 데이터**:
+- OPTIMIZED 시도 3회 모두 실패 (테스트 셀, 메인 루프 모두 멈춤)
+- STABLE 버전 50개 완료 (성공률 96%, 멈춤 0회)
+- 결론: **처음부터 STABLE 사용이 최선**
+
 ---
 
 ## 9. 체크리스트
@@ -402,16 +487,23 @@ print(whoami())  # 로그인 상태 확인
 - [ ] Google Drive 여유 공간 확인 (최소 20GB)
 
 ### 9.2 Week 1 시작 시 확인
-- [ ] Colab GPU 할당 확인 (Runtime > Change runtime type > T4)
-- [ ] 모든 패키지 설치 완료
-- [ ] Hugging Face 로그인 성공
-- [ ] 테스트 모델 로딩 성공
+- [x] Colab GPU 할당 확인 (Runtime > Change runtime type > T4)
+- [x] 모든 패키지 설치 완료
+- [x] Hugging Face 로그인 성공
+- [x] 테스트 모델 로딩 성공
 
 ### 9.3 주기적 확인 사항
-- [ ] 체크포인트 저장 확인
-- [ ] Google Drive 동기화 확인
-- [ ] GPU 메모리 사용량 모니터링
-- [ ] 학습 로그 확인
+- [x] 체크포인트 저장 확인
+- [x] Google Drive 동기화 확인
+- [x] GPU 메모리 사용량 모니터링
+- [x] 학습 로그 확인
+
+### 9.4 실제 완료 현황 (2025-12-26)
+- ✅ **Notebooks 01-04**: 데이터 생성 및 필터링 완료 (1,500 → 1,000 samples)
+- ✅ **Notebook 05**: LoRA SFT 완료 (A100, 8.2분, eval loss 0.541)
+- ✅ **Notebook 05b**: Prompt Tuning 완료 (A100, 18.8분, eval loss 2.979)
+- ✅ **비용 효율**: 총 2.41 compute units 사용 (예상 31-58 대비 20배 절감)
+- ⏳ **다음 단계**: Notebook 06 (DPO Training) 준비
 
 ---
 

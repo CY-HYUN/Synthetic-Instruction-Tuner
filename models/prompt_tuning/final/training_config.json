@@ -1,0 +1,22 @@
+{
+  "method": "prompt_tuning",
+  "base_model": "meta-llama/Llama-3.2-3B",
+  "training_data_size": 900,
+  "validation_data_size": 100,
+  "prompt_tuning_config": {
+    "num_virtual_tokens": 20,
+    "init_method": "PromptTuningInit.RANDOM"
+  },
+  "training_args": {
+    "epochs": 3,
+    "batch_size": 12,
+    "gradient_accumulation_steps": 2,
+    "learning_rate": 0.0003
+  },
+  "results": {
+    "train_loss": 5.222607662803249,
+    "eval_loss": 2.979475975036621,
+    "total_steps": 114
+  },
+  "timestamp": "2025-12-26 16:15:12"
+}

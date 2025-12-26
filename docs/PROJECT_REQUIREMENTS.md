@@ -11,8 +11,7 @@
 
 ### 1.2 프로젝트 목적
 1. **학술적 목표**: LLM 과목 기말 프로젝트 요구사항 충족
-2. **실무적 목표**: Dragon LLM 인턴십 (Synthetic Data Generation for Agentic LLMs) 준비
-3. **기술적 목표**: 합성 데이터 생성부터 미세조정, 평가까지의 End-to-End 파이프라인 구축
+2. **기술적 목표**: 합성 데이터 생성부터 미세조정, 평가까지의 End-to-End 파이프라인 구축
 
 ### 1.3 프로젝트 기간
 - **예상 기간**: 4주
@@ -42,16 +41,15 @@
 | 프레젠테이션 | 발표 자료 | 필수 |
 | **프로세스 이해** | **결과보다 과정 이해 중시** | **핵심** |
 
-### 2.2 Dragon LLM 인턴십 연관성
-**직무**: Synthetic Data Generation for Agentic LLMs (6개월, 파리)
+### 2.2 프로젝트 기술 범위
 
-| 인턴십 요구사항 | 프로젝트 대응 |
+| 핵심 기능 | 구현 방법 |
 |----------------|--------------|
 | Synthetic instruction data pipeline | Magpie 방식 데이터 생성 |
 | Reinforcement data pipeline | DPO를 통한 선호 학습 |
 | Fine-tuning with RL | SFT + DPO 파이프라인 |
 | lm-evaluation-harness | 표준 벤치마크 평가 |
-| Hugging Face 경험 (필수) | transformers, TRL, PEFT 활용 |
+| Hugging Face 생태계 활용 | transformers, TRL, PEFT 활용 |
 | 결과 공개 | GitHub + Hugging Face Hub |
 
 ---

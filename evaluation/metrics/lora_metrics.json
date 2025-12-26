@@ -1,0 +1,9 @@
+{
+  "method": "lora_r8",
+  "trainable_params": 12156928,
+  "total_params": 1815620608,
+  "trainable_ratio_percent": 0.6695742462072781,
+  "peak_memory_gb": 5.308755968,
+  "training_time_hours": 0.13686141709486643,
+  "inference_tokens_per_sec": 7.695408124341296
+}

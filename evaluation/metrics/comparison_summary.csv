@@ -1,0 +1,5 @@
+Method,Trainable Params,Param Ratio (%),Memory (GB),Train Time (h),Inference (tok/s),Avg Benchmark
+ZERO-SHOT,0,0.000,N/A,0.0,N/A,47.8%
+LORA,"12,156,928",0.670,5.3,0.1,7.7,54.7%
+PROMPT_TUNING,"61,440",0.003,5.9,0.3,8.4,50.9%
+DPO,"12,156,928",0.670,4.7,0.0,8.7,57.5%

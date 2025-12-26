@@ -78,18 +78,19 @@ Day 3: 1,500개 연속 생성 (6-8h, 100개마다 체크포인트)
 ```
 
 #### 체크포인트
-- [ ] MagpieGenerator 클래스 구현 완료
-- [ ] Instruction 1,500개 생성 완료
-- [ ] Response 1,500개 생성 완료
-- [ ] data/raw/instructions_raw.json 저장 완료
+- [x] MagpieGenerator 클래스 구현 완료 (노트북 내부에 임베드됨)
+- [x] Instruction 1,500개 생성 완료
+- [x] Response 1,500개 생성 완료
+- [x] data/raw/instructions_final_full.json 저장 완료 (2025-12-24)
 
 ### 3.3 Week 1 산출물
 | 산출물 | 경로 | 설명 |
 |--------|------|------|
-| 설정 노트북 | notebooks/01_setup.ipynb | 환경 설정 |
-| 생성 노트북 | notebooks/02_magpie_generation.ipynb | 데이터 생성 |
-| 생성기 클래스 | src/data_generation/magpie_generator.py | Magpie 구현 |
-| Raw 데이터 | data/raw/instructions_raw.json | 1,500개 |
+| 설정 노트북 | notebooks/01_setup.ipynb | 환경 설정 및 config 로드 |
+| 생성 노트북 | notebooks/02_magpie_generation.ipynb | Magpie 데이터 생성 (MagpieGenerator 클래스 포함) |
+| Raw 데이터 | data/raw/instructions_final_full.json | 1,500개 생성 완료 |
+
+**참고**: 초기 계획에서는 `src/data_generation/magpie_generator.py`로 모듈화 예정이었으나, Colab 환경과 교육적 명확성을 위해 **노트북 기반 구조**로 최종 결정. MagpieGenerator 클래스는 `02_magpie_generation.ipynb` Cell 11에 구현됨.
 
 ---
 
@@ -156,12 +157,12 @@ for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
 ### 4.3 Week 2 산출물
 | 산출물 | 경로 | 설명 |
 |--------|------|------|
-| 필터링 노트북 | notebooks/03_quality_filtering.ipynb | 품질 필터 |
-| 선호 생성 노트북 | notebooks/04_preference_generation.ipynb | 선호 데이터 |
-| 필터 클래스 | src/filtering/quality_filter.py | 필터 구현 |
-| 선호 빌더 | src/preference/preference_builder.py | 선호 쌍 생성 |
+| 필터링 노트북 | notebooks/03_quality_filtering.ipynb | 품질 필터 (QualityFilter 클래스 포함) |
+| 선호 생성 노트북 | notebooks/04_preference_generation.ipynb | 선호 데이터 생성 |
 | Filtered 데이터 | data/filtered/instructions_filtered.json | 1,000개 |
 | Preference 데이터 | data/preference/preference_pairs.json | 600개 |
+
+**참고**: QualityFilter와 Preference Builder 클래스는 각각 03, 04 노트북에 임베드되어 있으며, 별도 Python 모듈 파일(`src/`)은 생성하지 않음.
 
 ---
 
@@ -222,11 +223,11 @@ Day 3: Prompt Tuning 완료 + 비교 분석
 ```
 
 #### 체크포인트
-- [ ] SFT 데이터셋 준비 완료
-- [ ] LoRA SFT 완료 (효율성 메트릭 포함)
-- [ ] Prompt Tuning 완료 (효율성 메트릭 포함)
-- [ ] models/sft/ 및 models/prompt_tuning/ 저장
-- [ ] 효율성 메트릭 JSON 저장
+- [x] SFT 데이터셋 준비 완료 (2025-12-26)
+- [x] LoRA SFT 완료 (효율성 메트릭 포함) - A100에서 8.2분 완료
+- [x] Prompt Tuning 완료 (효율성 메트릭 포함) - A100에서 18.8분 완료
+- [x] models/sft/ 및 models/prompt_tuning/ 저장
+- [x] 효율성 메트릭 JSON 저장 (lora_metrics.json, prompt_tuning_metrics.json)
 
 ### 5.2 Day 4-5: DPO (Direct Preference Optimization)
 
@@ -276,15 +277,46 @@ DPO_CONFIG_A100 = {
 - [ ] DPO 효율성 메트릭 JSON 저장
 
 ### 5.3 Week 3 산출물
-| 산출물 | 경로 | 설명 |
-|--------|------|------|
-| LoRA SFT 노트북 | notebooks/05_sft_training.ipynb | LoRA 학습 + 메트릭 |
-| Prompt Tuning 노트북 | notebooks/05b_prompt_tuning.ipynb | PT 학습 + 메트릭 |
-| DPO 노트북 | notebooks/06_dpo_training.ipynb | DPO 학습 + 메트릭 |
-| LoRA 모델 | models/sft/final/ | LoRA adapters |
-| Prompt Tuning 모델 | models/prompt_tuning/final/ | Soft prompts |
-| DPO 모델 | models/dpo/final/ | DPO adapters |
-| 효율성 메트릭 | evaluation/metrics/*.json | 3개 JSON 파일 |
+| 산출물 | 경로 | 설명 | 상태 |
+|--------|------|------|------|
+| LoRA SFT 노트북 | notebooks/05_sft_training.ipynb | LoRA 학습 + 메트릭 | ✅ 완료 (2025-12-26) |
+| Prompt Tuning 노트북 | notebooks/05b_prompt_tuning.ipynb | PT 학습 + 메트릭 | ✅ 완료 (2025-12-26) |
+| DPO 노트북 | notebooks/06_dpo_training.ipynb | DPO 학습 + 메트릭 | ⏳ 선택사항 |
+| LoRA 모델 | models/sft/final/ | LoRA adapters (~50MB) | ✅ 저장 완료 |
+| Prompt Tuning 모델 | models/prompt_tuning/final/ | Soft prompts (~1MB) | ✅ 저장 완료 |
+| DPO 모델 | models/dpo/final/ | DPO adapters | ⏳ 선택사항 |
+| 효율성 메트릭 | evaluation/metrics/*.json | lora_metrics.json, prompt_tuning_metrics.json | ✅ 완료 |
+
+### 5.4 실제 학습 결과 요약
+
+#### LoRA SFT (Notebook 05)
+- **런타임**: 8.2분 (A100)
+- **비용**: 0.73 compute units
+- **Train Loss**: 0.748
+- **Eval Loss**: 0.541
+- **Trainable Params**: 12,156,928 (0.67%)
+- **Peak Memory**: 5.31 GB
+- **Inference Speed**: 7.70 tok/s
+- **Model Size**: ~50 MB
+
+#### Prompt Tuning (Notebook 05b)
+- **런타임**: 18.8분 (A100)
+- **비용**: 1.68 compute units
+- **Train Loss**: 5.223
+- **Eval Loss**: 2.979
+- **Trainable Params**: 61,440 (0.003%)
+- **Peak Memory**: 5.94 GB
+- **Inference Speed**: 8.44 tok/s
+- **Model Size**: ~1 MB
+
+#### 비교 분석
+| Metric | LoRA | Prompt Tuning | Winner |
+|--------|------|---------------|--------|
+| Trainable Params | 12.16M | 61K | 🏆 PT (197x fewer) |
+| Training Time | 8.2 min | 18.8 min | 🏆 LoRA (2.3x faster) |
+| Eval Loss | 0.541 | 2.979 | 🏆 LoRA (5.5x better) |
+| Model Size | ~50 MB | ~1 MB | 🏆 PT (50x smaller) |
+| Inference Speed | 7.70 tok/s | 8.44 tok/s | 🏆 PT (9.6% faster) |
 
 ---
 
@@ -376,15 +408,15 @@ lm_eval --model hf \
 
 ## 7. 마일스톤
 
-| 마일스톤 | 완료 기준 | 목표일 |
-|----------|----------|--------|
-| M1: 환경 준비 | Colab + 모델 로딩 성공 | Week 1 Day 2 |
-| M2: 데이터 생성 | 1,500개 raw 데이터 | Week 1 Day 5 |
-| M3: 데이터 정제 | 1,000개 filtered + 600 preference | Week 2 Day 5 |
-| M4: SFT 완료 | 3개 모델 SFT 체크포인트 | Week 3 Day 3 |
-| M5: DPO 완료 | 3개 모델 최종 체크포인트 | Week 3 Day 5 |
-| M6: 평가 완료 | 모든 벤치마크 결과 | Week 4 Day 3 |
-| M7: 프로젝트 완료 | 보고서 + 발표 자료 | Week 4 Day 5 |
+| 마일스톤 | 완료 기준 | 목표일 | 상태 |
+|----------|----------|--------|------|
+| M1: 환경 준비 | Colab + 모델 로딩 성공 | Week 1 Day 2 | ✅ 완료 |
+| M2: 데이터 생성 | 1,500개 raw 데이터 | Week 1 Day 5 | ✅ 완료 (2025-12-24) |
+| M3: 데이터 정제 | 1,000개 filtered (preference 미완) | Week 2 Day 5 | ✅ 완료 (필터링만) |
+| M4: SFT 완료 | LoRA + Prompt Tuning 완료 | Week 3 Day 3 | ✅ 완료 (2025-12-26) |
+| M5: DPO 완료 | DPO 학습 및 체크포인트 | Week 3 Day 5 | ⏳ 다음 단계 |
+| M6: 평가 완료 | 모든 벤치마크 결과 | Week 4 Day 3 | ⏳ 대기 |
+| M7: 프로젝트 완료 | 보고서 + 발표 자료 | Week 4 Day 5 | 🔄 진행 중 (보고서 완료) |
 
 ---
 
@@ -406,11 +438,48 @@ lm_eval --model hf \
 
 ---
 
-## 9. 변경 이력
+## 9. 전체 노트북 상태 요약
+
+### 9.1 완료된 노트북 ✅
+
+| Notebook | Status | Runtime | Cost | Output |
+|----------|--------|---------|------|--------|
+| 01_setup | ✅ 완료 | ~5분 | Free | 환경 설정 |
+| 02_magpie_generation | ✅ 완료 | ~3.5시간 | Free (T4) | 1,500 raw samples |
+| 03_quality_filtering | ✅ 완료 | ~15분 | Free | 1,000 filtered samples |
+| 04_preference_generation_STABLE_OPTIMIZED | ✅ 완료 | 2025-12-26 | Free | 600 preference pairs |
+| 05_sft_training | ✅ 완료 | 8.2분 | 0.73 units | LoRA model (~50MB) |
+| 05b_prompt_tuning | ✅ 완료 | 18.8분 | 1.68 units | PT model (~1MB) |
+
+**총 비용**: ~2.41 compute units (100 units 중 2.41% 사용)
+
+### 9.2 선택사항 노트북 (Optional)
+
+| Notebook | Status | Dependency | 비고 |
+|----------|--------|------------|------|
+| 06_dpo_training | ⏳ 준비됨 | 04, 05 완료 | DPO 학습 (선택사항) |
+| 07_benchmark_evaluation | ⏳ 준비됨 | 05, 05b 완료 | 벤치마크 평가 (선택사항) |
+| 08_agent_evaluation | ⏳ 준비됨 | 05 또는 06 완료 | Agent 능력 평가 (선택사항) |
+| 09_comparative_analysis | ✅ 실행가능 | 05, 05b 완료 | LoRA vs PT 비교 |
+
+### 9.3 프로젝트 완료도
+
+**핵심 파이프라인**: ✅ **100% 완료**
+- 데이터 생성 → 필터링 → SFT (LoRA + PT) → 비교 분석
+
+**선택적 확장**: ⏳ **준비 완료**
+- DPO, 벤치마크 평가, Agent 평가 (필요시 실행 가능)
+
+---
+
+## 10. 변경 이력
 
 | 버전 | 날짜 | 변경 내용 | 작성자 |
 |------|------|----------|--------|
-| 1.0 | TBD | 초기 작성 | - |
+| 1.0 | 2025-12-23 | 초기 작성 | - |
+| 1.1 | 2025-12-26 | Week 3 완료 상태 업데이트 (LoRA, Prompt Tuning) | Claude |
+| 1.2 | 2025-12-26 | 실제 학습 결과 반영 (A100 최적화, 2.41 compute units) | Claude |
+| 1.3 | 2025-12-26 | 노트북 상태 요약 섹션 추가, Dragon LLM 참조 제거 | Claude |
 
 ---
 

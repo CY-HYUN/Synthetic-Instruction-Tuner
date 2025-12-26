@@ -80,19 +80,20 @@ Checkpoint interval: 100 samples (optimized for speed)
 
 #### Checkpoints
 
-- [ ] MagpieGenerator Class Implementation Complete
-- [ ] Instruction 1,500 Generation Complete
-- [ ] Response 1,500 Generation Complete
-- [ ] Save data/raw/instructions_raw.json
+- [x] MagpieGenerator Class Implementation Complete (embedded in notebook)
+- [x] Instruction 1,500 Generation Complete
+- [x] Response 1,500 Generation Complete
+- [x] Save data/raw/instructions_final_full.json (completed 2025-12-24)
 
 ### 3.3 Week 1 Deliverables
 
-| Deliverable         | Path                                    | Description           |
-| ------------------- | --------------------------------------- | --------------------- |
-| Setup Notebook      | notebooks/01_setup.ipynb                | Environment Setup     |
-| Generation Notebook | notebooks/02_magpie_generation.ipynb    | Data Generation       |
-| Generator Class     | src/data_generation/magpie_generator.py | Magpie Implementation |
-| Raw Data            | data/raw/instructions_raw.json          | 1,500 items           |
+| Deliverable         | Path                                 | Description                                       |
+| ------------------- | ------------------------------------ | ------------------------------------------------- |
+| Setup Notebook      | notebooks/01_setup.ipynb             | Environment setup and config loading              |
+| Generation Notebook | notebooks/02_magpie_generation.ipynb | Magpie data generation (MagpieGenerator included) |
+| Raw Data            | data/raw/instructions_final_full.json | 1,500 items generated                             |
+
+**Note**: Initial plan included `src/data_generation/magpie_generator.py` as a separate module, but final implementation uses **notebook-based architecture** for Colab compatibility and educational clarity. MagpieGenerator class is implemented in `02_magpie_generation.ipynb` Cell 11.
 
 ---
 
@@ -164,14 +165,14 @@ for model_name in ["llama-3.2-1b", "mistral-7b", "qwen2.5-3b"]:
 
 ### 4.3 Week 2 Deliverables
 
-| Deliverable                    | Path                                     | Description                |
-| ------------------------------ | ---------------------------------------- | -------------------------- |
-| Filtering Notebook             | notebooks/03_quality_filtering.ipynb     | Quality Filter             |
-| Preference Generation Notebook | notebooks/04_preference_generation.ipynb | Preference Data            |
-| Filter Class                   | src/filtering/quality_filter.py          | Filter Implementation      |
-| Preference Builder             | src/preference/preference_builder.py     | Preference Pair Generation |
-| Filtered Data                  | data/filtered/instructions_filtered.json | 1,000 items                |
-| Preference Data                | data/preference/preference_pairs.json    | 600 items                  |
+| Deliverable                    | Path                                     | Description                              |
+| ------------------------------ | ---------------------------------------- | ---------------------------------------- |
+| Filtering Notebook             | notebooks/03_quality_filtering.ipynb     | Quality Filter (QualityFilter included)  |
+| Preference Generation Notebook | notebooks/04_preference_generation.ipynb | Preference Data Generation               |
+| Filtered Data                  | data/filtered/instructions_filtered.json | 1,000 items                              |
+| Preference Data                | data/preference/preference_pairs.json    | 600 items                                |
+
+**Note**: QualityFilter and Preference Builder classes are embedded in notebooks 03 and 04 respectively. No separate Python modules in `src/` directory.
 
 ---
 

@@ -115,3 +115,10 @@ wandb/
 *.env
 secrets.json
 credentials.json
+
+# Backup files
+*.backup
+*.bak
+
+# Test files
+test_*.txt
