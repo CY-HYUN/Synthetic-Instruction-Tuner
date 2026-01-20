@@ -134,3 +134,7 @@ credentials.json
 
 # Test files
 test_*.txt
+
+# Documentation - Archive and submission files
+docs/archive/
+docs/final_submission/
