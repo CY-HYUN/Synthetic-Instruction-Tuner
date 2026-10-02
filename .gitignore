@@ -138,3 +138,7 @@ test_*.txt
 # Documentation - Archive and submission files
 docs/archive/
 docs/final_submission/
+
+# Local assistant settings and notes (not part of the project)
+.claude/
+CLAUDE.md
