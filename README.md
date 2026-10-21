@@ -7,6 +7,8 @@ A complete low-cost LLM fine-tuning pipeline built on Google Colab: generate 1,5
 [![Model](https://img.shields.io/badge/Model-Llama--3.2--3B-orange.svg)](https://huggingface.co/meta-llama/Llama-3.2-3B)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**Trained adapters on Hugging Face:** [LoRA SFT](https://huggingface.co/CY-HYUN/Llama-3.2-3B-SynthInstruct-LoRA-SFT) · [LoRA + DPO](https://huggingface.co/CY-HYUN/Llama-3.2-3B-SynthInstruct-LoRA-DPO). Each loads on top of the gated meta-llama/Llama-3.2-3B base; the model card has the code.
+
 ---
 
 ## Results (every number traces to a committed artifact)
